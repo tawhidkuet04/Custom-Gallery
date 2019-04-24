@@ -1,0 +1,20 @@
+//
+//  Config.pch
+//  BCRangeSlider
+//
+//  Created by Brain Craft Ltd. on 11/18/18.
+//  Copyright © 2018 Brain Craft Ltd. All rights reserved.
+//
+
+#ifndef Config_pch
+#define Config_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#define SCREEN_WIDTH ([[UIScreen mainScreen] bounds].size.width)
+#define SCREEN_HEIGHT ([[UIScreen mainScreen] bounds].size.height)
+#define SCREEN_MAX_LENGTH (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
+#define SCREEN_MIN_LENGTH (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
+
+#endif /* Config_pch */

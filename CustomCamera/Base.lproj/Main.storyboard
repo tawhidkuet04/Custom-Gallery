@@ -29,7 +29,6 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
@@ -74,11 +73,26 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="bXs-dZ-ckF"/>
                                 </connections>
                             </collectionView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="uB3-1p-oPn">
+                                <rect key="frame" x="131.5" y="589" width="112.5" height="29"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="uB3-1p-oPn" secondAttribute="height" multiplier="121:27" id="PTP-ya-tjq"/>
+                                </constraints>
+                                <segments>
+                                    <segment title="Photo"/>
+                                    <segment title="Video"/>
+                                </segments>
+                                <connections>
+                                    <action selector="photosOrVideo:" destination="BYZ-38-t0r" eventType="valueChanged" id="rtr-pN-MWN"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="uB3-1p-oPn" firstAttribute="width" secondItem="ML4-J7-lsh" secondAttribute="width" multiplier="0.3" id="6m2-yo-Ft3"/>
                             <constraint firstItem="ML4-J7-lsh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="CV7-rK-btI"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ML4-J7-lsh" secondAttribute="bottom" id="DYM-ax-fMI"/>
+                            <constraint firstItem="uB3-1p-oPn" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Eoq-9x-0VH"/>
                             <constraint firstItem="ML4-J7-lsh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="lg5-LO-1V9"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ML4-J7-lsh" secondAttribute="trailing" id="uF9-zf-tp0"/>
                         </constraints>
@@ -87,10 +101,41 @@
                     <navigationItem key="navigationItem" id="auu-GQ-7Yv"/>
                     <connections>
                         <outlet property="collectionView" destination="ML4-J7-lsh" id="eUE-OX-elp"/>
+                        <outlet property="segmentControllChoosePhotoOrVideo" destination="uB3-1p-oPn" id="bFk-g2-yGd"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-585" y="27"/>
+        </scene>
+        <!--Video Show View Controller-->
+        <scene sceneID="5Rc-2R-Kfa">
+            <objects>
+                <viewController id="b85-0O-GyJ" customClass="videoShowViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="c2W-gT-QVc">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cYC-Cy-GZs">
+                                <rect key="frame" x="0.0" y="95" width="375" height="211"/>
+                                <color key="backgroundColor" red="0.11813876299999999" green="0.11813876299999999" blue="0.11813876299999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="211" id="jiv-Lf-AoG"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="cYC-Cy-GZs" firstAttribute="trailing" secondItem="k3F-r1-H2S" secondAttribute="trailing" id="6JZ-qv-Zx8"/>
+                            <constraint firstItem="cYC-Cy-GZs" firstAttribute="leading" secondItem="k3F-r1-H2S" secondAttribute="leading" id="XSK-P7-gyF"/>
+                            <constraint firstItem="cYC-Cy-GZs" firstAttribute="top" secondItem="k3F-r1-H2S" secondAttribute="top" constant="75" id="fyw-DF-Pko"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="k3F-r1-H2S"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HSc-Tf-fwV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="151" y="27"/>
         </scene>
     </scenes>
 </document>
