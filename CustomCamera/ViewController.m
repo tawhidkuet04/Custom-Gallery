@@ -11,7 +11,7 @@
 #import <Photos/Photos.h>
 #import "PhotoCell.h"
 #import "imageShowViewController.h"
-#import "videoShowViewController.h"
+#import "PlayerDisplayVCViewController.h"
 
 @interface ViewController ()<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 @property (strong, nonatomic) IBOutlet UISegmentedControl *segmentControllChoosePhotoOrVideo;
@@ -115,13 +115,10 @@
 }
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if(flag){
-        videoShowViewController *videoShowController = [[videoShowViewController alloc] init];
         
-        
-        
-        videoShowController.asset = self.VideoAssets[indexPath.row];
-//        [self dismissViewControllerAnimated:YES completion:nil];
-        [self.navigationController pushViewController:videoShowController animated:YES];
+        PlayerDisplayVCViewController *playerViewController = (PlayerDisplayVCViewController*)[self.storyboard instantiateViewControllerWithIdentifier:@"PlayerDisplayVCViewController"];
+        playerViewController.passet =self.VideoAssets[indexPath.row];;
+        [self.navigationController pushViewController:playerViewController animated:YES];
     }else {
         imageShowViewController *imageShowController = [[imageShowViewController alloc] init];
         imageShowController.asset =self.assets[indexPath.row];

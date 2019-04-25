@@ -137,5 +137,97 @@
             </objects>
             <point key="canvasLocation" x="151" y="27"/>
         </scene>
+        <!--Player DisplayVC View Controller-->
+        <scene sceneID="KL5-67-PfL">
+            <objects>
+                <viewController storyboardIdentifier="PlayerDisplayVCViewController" id="0RK-jV-eeq" customClass="PlayerDisplayVCViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Hab-fo-XPW">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OMI-ic-5Ip" customClass="PlayerBC">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3TD-ia-kkV">
+                                        <rect key="frame" x="29.999999999999993" y="52" width="124.33333333333331" height="38.333333333333343"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="3TD-ia-kkV" secondAttribute="height" multiplier="113:35" id="fTm-gi-pxV"/>
+                                        </constraints>
+                                        <state key="normal" title="Back"/>
+                                        <connections>
+                                            <action selector="backButtonPressed:" destination="0RK-jV-eeq" eventType="touchUpInside" id="L05-lq-aEf"/>
+                                        </connections>
+                                    </button>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="thr-Za-aT2">
+                                        <rect key="frame" x="0.0" y="576.5" width="375" height="90.5"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Hg-St-y8a">
+                                                <rect key="frame" x="150" y="60.5" width="75" height="25"/>
+                                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="0Hg-St-y8a" secondAttribute="height" multiplier="3:1" id="BeZ-PT-Gy2"/>
+                                                    <constraint firstAttribute="width" secondItem="0Hg-St-y8a" secondAttribute="height" multiplier="3:1" id="tPa-kj-t7V"/>
+                                                </constraints>
+                                                <state key="normal" title="Play">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="playPauseAction:" destination="0RK-jV-eeq" eventType="touchUpInside" id="eCe-Ps-624"/>
+                                                </connections>
+                                            </button>
+                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="8S7-T3-SVr">
+                                                <rect key="frame" x="-2" y="31.5" width="379" height="28.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="8S7-T3-SVr" secondAttribute="height" multiplier="69:5" id="qZG-fg-bEw"/>
+                                                </constraints>
+                                                <connections>
+                                                    <action selector="slideValueChange:" destination="0RK-jV-eeq" eventType="valueChanged" id="RUa-zY-AN6"/>
+                                                    <action selector="slidingBegin:" destination="0RK-jV-eeq" eventType="touchDown" id="mN5-7h-zPX"/>
+                                                    <action selector="slidingDone:" destination="0RK-jV-eeq" eventType="touchUpOutside" id="4dX-oR-XUx"/>
+                                                    <action selector="slidingDone:" destination="0RK-jV-eeq" eventType="touchUpInside" id="vMj-MU-eCA"/>
+                                                </connections>
+                                            </slider>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="8S7-T3-SVr" firstAttribute="centerX" secondItem="thr-Za-aT2" secondAttribute="centerX" id="Fjk-LH-swS"/>
+                                            <constraint firstAttribute="width" secondItem="thr-Za-aT2" secondAttribute="height" multiplier="207:50" id="G7e-Ki-8sl"/>
+                                            <constraint firstAttribute="bottom" secondItem="0Hg-St-y8a" secondAttribute="bottom" constant="5" id="RhW-W9-n67"/>
+                                            <constraint firstItem="8S7-T3-SVr" firstAttribute="centerY" secondItem="thr-Za-aT2" secondAttribute="centerY" id="SPZ-ub-QM6"/>
+                                            <constraint firstItem="0Hg-St-y8a" firstAttribute="centerX" secondItem="thr-Za-aT2" secondAttribute="centerX" id="zhD-E4-DSg"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="8S7-T3-SVr" firstAttribute="width" secondItem="OMI-ic-5Ip" secondAttribute="width" id="MMa-j6-WEN"/>
+                                    <constraint firstItem="thr-Za-aT2" firstAttribute="leading" secondItem="OMI-ic-5Ip" secondAttribute="leading" id="jSK-Gd-LOQ"/>
+                                    <constraint firstItem="thr-Za-aT2" firstAttribute="width" secondItem="OMI-ic-5Ip" secondAttribute="width" id="llA-LB-Kdm"/>
+                                    <constraint firstAttribute="bottom" secondItem="thr-Za-aT2" secondAttribute="bottom" id="oBv-7S-cI0"/>
+                                    <constraint firstAttribute="trailing" secondItem="thr-Za-aT2" secondAttribute="trailing" id="ta5-7W-VE9"/>
+                                    <constraint firstItem="0Hg-St-y8a" firstAttribute="width" secondItem="OMI-ic-5Ip" secondAttribute="width" multiplier="0.2" id="va4-jv-tka"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="OMI-ic-5Ip" firstAttribute="top" secondItem="Hab-fo-XPW" secondAttribute="top" id="MsW-mV-8cK"/>
+                            <constraint firstItem="OMI-ic-5Ip" firstAttribute="trailing" secondItem="pFZ-MS-kjn" secondAttribute="trailing" id="NHa-yc-QVw"/>
+                            <constraint firstItem="OMI-ic-5Ip" firstAttribute="leading" secondItem="pFZ-MS-kjn" secondAttribute="leading" id="boG-XW-0b5"/>
+                            <constraint firstItem="OMI-ic-5Ip" firstAttribute="bottom" secondItem="pFZ-MS-kjn" secondAttribute="bottom" id="u61-nv-jot"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="pFZ-MS-kjn"/>
+                    </view>
+                    <connections>
+                        <outlet property="playPause" destination="0Hg-St-y8a" id="xNu-eD-Xzu"/>
+                        <outlet property="playerView" destination="OMI-ic-5Ip" id="NlG-Og-Obn"/>
+                        <outlet property="slider" destination="8S7-T3-SVr" id="JSs-ZU-cNG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VdJ-mF-mkb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="881" y="27"/>
+        </scene>
     </scenes>
 </document>
