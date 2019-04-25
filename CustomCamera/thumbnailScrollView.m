@@ -7,17 +7,27 @@
 //
 
 #import "thumbnailScrollView.h"
-
+#define SCREEN_WIDTH ([[UIScreen mainScreen] bounds].size.width)
+#define SCREEN_HEIGHT ([[UIScreen mainScreen] bounds].size.height)
+#define SCREEN_MAX_LENGTH (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
+#define SCREEN_MIN_LENGTH (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
 @implementation thumbnailScrollView
 - (id)initWithFrame:(CGRect)frame andAsset:(AVAsset *)asset {
     self = [super initWithFrame:frame];
     self.backgroundColor = [ UIColor blueColor ];
-     CMTime duration;
+    ///scroll view container size calculation
+    CMTime duration;
     duration = asset.duration;
     float totalTime = CMTimeGetSeconds(duration);
     self.contentSize= CGSizeMake(totalTime*(5)*100, 100);
+    
+
    // NSLog(@"aaaaaaaaaa %f",totalTime*(5)*100);
     [self generateFramefromvideo:asset];
+    //seekbar initialization
+
+
+    
     
     return self ;
 }

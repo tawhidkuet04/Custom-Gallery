@@ -14,12 +14,14 @@
 #define SCREEN_MIN_LENGTH (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
 @interface PlayerDisplayVCViewController (){
     AVPlayer *player;
+    UIView *seekBar;
     IBOutlet UIButton *playPause;
     IBOutlet UISlider *slider;
     AVPlayerItem *playerItem ;
     AVAsset *audioAsset;
     AVAsset *asset;
     id observer;
+    float posX , currentTime ;
 }
 
 @end
@@ -39,7 +41,7 @@
         resultAsset = avasset;
         dispatch_async(dispatch_get_main_queue(), ^{
             self->asset = avasset;
-
+            
             CMTime duration;
             NSLog(@"%f",CMTimeGetSeconds(self->audioAsset.duration));
             //    if (CMTimeGetSeconds(audioAsset.duration) < CMTimeGetSeconds(asset.duration)) {
@@ -50,14 +52,26 @@
             }
             self->slider.maximumValue = CMTimeGetSeconds(duration);
             self->slider.hidden =  NO;
-            NSError *error;
+            //NSError *error;
             [self->slider setValue:0];
-        
-            self->_scrollView = [[thumbnailScrollView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-200, SCREEN_WIDTH, 100) andAsset:asset ];
+     
+            
+            self->_scrollView = [[thumbnailScrollView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-200, SCREEN_WIDTH, 100) andAsset:self->asset ];
             [self.view addSubview:self->_scrollView];
-            self->playerItem = [AVPlayerItem playerItemWithAsset:asset];
+            // temporary view
+            UIView *tempView = [[UIView alloc]initWithFrame:(CGRect)CGRectMake(0, SCREEN_HEIGHT-200, 0.5, 0.5)];
+            tempView.backgroundColor = [UIColor clearColor];
+            [self.view addSubview:tempView];
+            // seekbar initialiaztion
+            posX = 0 ,currentTime = 0 ;
+            self->seekBar = [[UIView alloc] initWithFrame:(CGRect)CGRectMake(0,0 ,10, 100)];
+            self->seekBar.backgroundColor = [UIColor greenColor];
+            [tempView addSubview:self->seekBar];
+            //[seekBar removeFromSuperview];
+            
+            self->playerItem = [AVPlayerItem playerItemWithAsset:self->asset];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:self->playerItem];
-            self->player = [AVPlayer playerWithPlayerItem:playerItem];
+            self->player = [AVPlayer playerWithPlayerItem:self->playerItem];
             
             //  player.frame = self.playerView.bounds;
             // __weak NSObject *weakSelf = self;
@@ -66,7 +80,8 @@
             // _playerView.player = player;
             [self.playerView setOk:[UIScreen mainScreen].bounds];
             [self.playerView setNeedsDisplay];
-            [self.playerView setPlayer:player];
+            [self.playerView setPlayer:self->player];
+            
         });
         // dispatch_semaphore_signal(semaphore);
     }];
@@ -125,6 +140,11 @@
     [self PlayerSetPlayPause:playPause withPlayingStatus:1];
 }
 - (IBAction)slideValueChange:(UISlider *)sender {
+    CGRect trackRect = [self->slider trackRectForBounds:self->slider.bounds];
+    CGRect thumbRect = [self->slider thumbRectForBounds:self->slider.bounds
+                                              trackRect:trackRect
+                                                  value:self->slider.value];
+    [seekBar setCenter:CGPointMake( thumbRect.origin.x,seekBar.center.y)];
     [player seekToTime:CMTimeMakeWithSeconds(sender.value, NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 }
 - (IBAction)slidingDone:(UISlider *)sender {
@@ -134,7 +154,15 @@
 - (void)updateSlider {
     
     double time = CMTimeGetSeconds([player currentTime]);
-//     NSLog(@"min %f max %f time %f dur %f",minValue,maxValue,time,duration);
+    posX+= CMTimeGetSeconds([player currentTime]);
+    currentTime = CMTimeGetSeconds([player currentTime]);
+    CGRect trackRect = [self->slider trackRectForBounds:self->slider.bounds];
+    CGRect thumbRect = [self->slider thumbRectForBounds:self->slider.bounds
+                                             trackRect:trackRect
+                                                  value:self->slider.value];
+    [seekBar setCenter:CGPointMake( thumbRect.origin.x,seekBar.center.y)];
+    NSLog(@"cur %f",slider.value);
+    //     NSLog(@"min %f max %f time %f dur %f",minValue,maxValue,time,duration);
     [slider setValue:time];
     
 }
