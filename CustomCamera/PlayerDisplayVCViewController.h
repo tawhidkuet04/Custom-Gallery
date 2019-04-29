@@ -12,7 +12,10 @@
 #import <Photos/Photos.h>
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PlayerDisplayVCViewController : UIViewController
+@interface PlayerDisplayVCViewController : UIViewController{
+    double videoTotalTime;
+    bool playOrPause;
+}
 @property (strong, nonatomic) IBOutlet PlayerBC *playerView;
 @property (nonatomic, strong) NSURL *videoURL;
 @property (strong, nonatomic) NSTimer *timer;

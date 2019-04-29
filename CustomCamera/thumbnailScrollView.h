@@ -9,9 +9,13 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 NS_ASSUME_NONNULL_BEGIN
+@protocol playerDisplayVCViewControllerDelegate <NSObject>
+-(void)updateTotalTime:(double)totalTime;
 
+@end
 @interface thumbnailScrollView : UIScrollView
--(id)initWithFrame:(CGRect)frame andAsset:(AVAsset *)asset ;
+@property(weak,nonatomic) id <playerDisplayVCViewControllerDelegate> delegator ;
+- (id)initWithFrame:(CGRect)frame withDelegate:(id<playerDisplayVCViewControllerDelegate>) delegate andAsset:(AVAsset *)asset;
 -(void) generateFramefromvideo: (AVAsset *) movieAsset;
 @end
 
