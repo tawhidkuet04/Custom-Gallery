@@ -22,6 +22,10 @@
     AVAsset *asset;
     id observer;
     IBOutlet UISlider *sliderScroll;
+    
+    ////// range bar start and end
+    UIView *startBound;
+    UIView *endBound;
 }
 
 @end
@@ -30,7 +34,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    ///// navigatiob slide off
+    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    //NSLog(@"slide %f",sliderScroll.maximumValue);
     // asset = [AVAsset assetWithURL:_videoURL];
     PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc]init];
     options.version = PHVideoRequestOptionsVersionOriginal;
@@ -59,18 +65,37 @@
             self->_scrollView = [[thumbnailScrollView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-200, SCREEN_WIDTH, 100) withDelegate:self andAsset:self->asset ];
             [self.view addSubview:self->_scrollView];
             // temporary view
-            NSLog(@"tot %f content %f",self->videoTotalTime,videoTotalTime*3*100);
+            //NSLog(@"tot %f content %f",self->videoTotalTime,videoTotalTime*3*100);
             
-            UIView *tempView = [[UIView alloc]initWithFrame:(CGRect)CGRectMake(0, SCREEN_HEIGHT-200, 0.5, 0.5)];
-            tempView.backgroundColor = [UIColor clearColor];
-            [self.view addSubview:tempView];
+//            UIView *tempView = [[UIView alloc]initWithFrame:(CGRect)CGRectMake(0, SCREEN_HEIGHT-200, 0.5, 0.5)];
+//            tempView.backgroundColor = [UIColor clearColor];
+//            [self.view addSubview:tempView];
             // seekbar initialiaztion
             //(void)(self->posX = 0) ,self->currentTime = 0 ;
-            self->seekBar = [[UIView alloc] initWithFrame:(CGRect)CGRectMake(0,0 ,10, 100)];
+            self->seekBar = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-200, 10, 100)];
             self->seekBar.backgroundColor = [UIColor greenColor];
             
-            //[tempView addSubview:slider];
-            [tempView addSubview:self->seekBar];
+            //[tempView addSubview:slider];//
+           [self.view addSubview:self->seekBar];
+
+            ///// bound view drawing
+            self->startBound = [[UIView alloc] initWithFrame:CGRectMake(10, SCREEN_HEIGHT-200, 20, 100)] ;
+            self->startBound.backgroundColor = [ UIColor blueColor ];
+            self->endBound = [[UIView alloc] initWithFrame:CGRectMake(50, SCREEN_HEIGHT-200, 20, 100)];
+            self->endBound.backgroundColor = [ UIColor blueColor ];
+            [self.view addSubview:self->startBound];
+            [self.view addSubview:self->endBound];
+            self->sliderScroll.maximumValue = self->_scrollView.contentSize.width;
+            NSLog(@"slide %f",self->sliderScroll.maximumValue);
+            UIPanGestureRecognizer *startPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleStartPan:)];
+            [self->startBound addGestureRecognizer:startPanGR];
+            self->startBound.userInteractionEnabled = YES;
+            
+            UIPanGestureRecognizer *endPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleEndPan:)];
+            [self->endBound addGestureRecognizer:endPanGR];
+            self->endBound.userInteractionEnabled = YES ;
+            
+            
             //[seekBar removeFromSuperview];
             self->playerItem = [AVPlayerItem playerItemWithAsset:self->asset];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:self->playerItem];
@@ -90,6 +115,53 @@
     }];
     
     
+}
+
+-(void)handleStartPan:(UIPanGestureRecognizer *)recognizer{
+    
+  //  NSLog(@"asdasdasdasd");
+    UIView *pannedView = recognizer.view ;
+    CGPoint translation = [recognizer translationInView:pannedView.superview];
+    CGPoint point;
+   // NSLog(@"pan %f",pannedView.center.x + translation.x);
+    if(pannedView.center.x + translation.x > SCREEN_WIDTH-10){
+        point = CGPointMake(SCREEN_WIDTH-10, pannedView.center.y);
+    }else if(pannedView.center.x + translation.x < 10 ){
+        point = CGPointMake(10, pannedView.center.y);
+    }else {
+        point = CGPointMake(pannedView.center.x + translation.x , pannedView.center.y);
+    }
+    CGRect endBoundVal = endBound.frame;
+    if (point.x > endBoundVal.origin.x-10){
+        point.x = endBoundVal.origin.x-10;
+    }
+    pannedView.center = point;
+    [recognizer setTranslation:CGPointZero inView:pannedView.superview];
+    
+}
+
+-(void)handleEndPan:(UIPanGestureRecognizer *)recognizer{
+    
+    //  NSLog(@"asdasdasdasd");
+    UIView *pannedView = recognizer.view ;
+    CGPoint translation = [recognizer translationInView:pannedView.superview];
+    CGPoint point;
+    NSLog(@"pan %f",pannedView.center.x + translation.x);
+    if(pannedView.center.x + translation.x > SCREEN_WIDTH-10){
+        point = CGPointMake(SCREEN_WIDTH-10, pannedView.center.y);
+    }else if(pannedView.center.x + translation.x < 10 ){
+        point = CGPointMake(10, pannedView.center.y);
+    }else {
+        point = CGPointMake(pannedView.center.x + translation.x , pannedView.center.y);
+    }
+    CGRect starBoundVal = startBound.frame;
+    if (point.x < starBoundVal.origin.x+30){
+        point.x = starBoundVal.origin.x+30;
+    }
+   // NSLog(@"start point %f end oint %f",starBoundVal.origin.x,point.x);
+    pannedView.center = point;
+    [recognizer setTranslation:CGPointZero inView:pannedView.superview];
+  
 }
 - (void)viewWillAppear:(BOOL)animated{
     //    playerItem = [AVPlayerItem playerItemWithURL:_videoURL];
@@ -169,7 +241,7 @@
     //NSLog(@"x--- %f y--- %f",thumbRect.origin.x,thumbRect.origin.y);
     
     double x = ((_scrollView.contentSize.width-SCREEN_WIDTH)/videoTotalTime)* time;
-    NSLog(@"x--- %f y--- %f",x,thumbRect.origin.y);
+//NSLog(@"x--- %f y--- %f",x,thumbRect.origin.y);
     _scrollView.contentOffset= CGPointMake( x,thumbRect.origin.y + 2);
     [seekBar setCenter:CGPointMake( thumbRect.origin.x,seekBar.center.y)];
     //  NSLog(@"cur %f",slider.value);
@@ -210,6 +282,7 @@
                                                        value:self->sliderScroll.value];
     [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*thumbRec.origin.x, NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 }
+
 
 @end
 

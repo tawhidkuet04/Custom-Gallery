@@ -125,7 +125,7 @@
                 
                 j = i ;
                 imgV.frame = CGRectMake(imgWidth * i++ , 0, imgWidth, imgHeight);
-                NSLog(@"ff %f",imgWidth *j);
+               // NSLog(@"ff %f",imgWidth *j);
                 [imgV setContentMode:UIViewContentModeScaleAspectFill];
                 
             });
