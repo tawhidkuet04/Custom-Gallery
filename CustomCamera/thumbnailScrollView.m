@@ -22,7 +22,7 @@
     duration = asset.duration;
     float totalTime = CMTimeGetSeconds(duration);
     //NSLog(@"total time here %f %f",totalTime,ceil(totalTime*(3))*100);
-    self.contentSize= CGSizeMake(totalTime*(5)*100, 100);
+    self.contentSize= CGSizeMake(totalTime*(1)*100, 100);
     
    // NSLog(@"aaaaaaaaaa %f",totalTime*(5)*100);
     NSLog(@"ok aise");
@@ -84,7 +84,7 @@
     instruction.layerInstructions = [NSArray arrayWithObject:transformer];
     
     AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-    videoComposition.frameDuration = CMTimeMake(1, 5);
+    videoComposition.frameDuration = CMTimeMake(1, 1);
     videoComposition.renderSize = size ;
     videoComposition.instructions = [NSArray arrayWithObject:instruction];
     

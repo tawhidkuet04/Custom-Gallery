@@ -141,6 +141,8 @@
 				4E7EE2AE226F0A0000EF8C99 /* PhotoCell.m */,
 				4E7EE27A226EF24F00EF8C99 /* Main.storyboard */,
 				4E7EE27D226EF25000EF8C99 /* Assets.xcassets */,
+				4E3041D322782AA90080A6B2 /* StartArrow.png */,
+				4E3041D422782AA90080A6B2 /* EndArrow.png */,
 				4E7EE27F226EF25000EF8C99 /* LaunchScreen.storyboard */,
 				4E7EE282226EF25000EF8C99 /* Info.plist */,
 				4E97124222703F0B00816F91 /* Config.pch */,
@@ -154,8 +156,6 @@
 				4E031BC62271B48100C41162 /* PlayerDisplayVCViewController.m */,
 				4E031BC82271B48100C41162 /* thumbnailScrollView.h */,
 				4E031BCA2271B48200C41162 /* thumbnailScrollView.m */,
-				4E3041D422782AA90080A6B2 /* EndArrow.png */,
-				4E3041D322782AA90080A6B2 /* StartArrow.png */,
 			);
 			path = CustomCamera;
 			sourceTree = "<group>";
