@@ -14,14 +14,18 @@
 #define SCREEN_MIN_LENGTH (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
 @interface PlayerDisplayVCViewController ()<playerDisplayVCViewControllerDelegate>{
     AVPlayer *player;
+
+ 
     UIView *seekBar;
     IBOutlet UIButton *playPause;
     AVPlayerItem *playerItem ;
     AVAsset *audioAsset;
     AVAsset *asset;
     id observer;
+    IBOutlet UIView *playerViewBound;
     IBOutlet UISlider *sliderScroll;
     
+   // IBOutlet UIView *framGenerateView;
     ////// range bar start and end
     UIImageView *startBound;
     UIImageView *endBound;
@@ -60,9 +64,13 @@
                 duration = self->asset.duration;
             }
 
-            
-            self->_scrollView = [[thumbnailScrollView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-200, SCREEN_WIDTH, 100) withDelegate:self andAsset:self->asset ];
-            [self.view addSubview:self->_scrollView];
+//            double x = self->_scrollViewFake.frame.origin.x , y = _scrollViewFake.frame.origin.y , height = _scrollViewFake.frame.size.height
+//            ,width = self->_scrollViewFake.frame.size.width;
+//            NSLog(@"checking %f %f %f %f",x,y,width,height);
+            NSLog(@"FF %f %f %f %f",_frameGenerateView.frame.origin.x,_frameGenerateView.frame.origin.y,_frameGenerateView.frame.size.width,_frameGenerateView.frame.size.height);
+            self->_scrollView = [[thumbnailScrollView alloc] initWithFrame:CGRectMake(0,0,_frameGenerateView.frame.size.width, _frameGenerateView.frame.size
+                                                                                      .height) withDelegate:self andAsset:self->asset  frameView:_frameGenerateView];
+            [self->_frameGenerateView addSubview:self->_scrollView];
             // temporary view
             //NSLog(@"tot %f content %f",self->videoTotalTime,videoTotalTime*3*100);
             
@@ -71,26 +79,30 @@
 //            [self.view addSubview:tempView];
             // seekbar initialiaztion
             //(void)(self->posX = 0) ,self->currentTime = 0 ;
-            self->seekBar = [[UIView alloc] initWithFrame:CGRectMake(30, SCREEN_HEIGHT-200, 2, 100)];
-            self->seekBar.backgroundColor = [UIColor greenColor];
+            self->seekBar = [[UIView alloc] initWithFrame:CGRectMake(0,0,2, self->_frameGenerateView.frame.size
+                                                                     .height)];
+            self->seekBar.backgroundColor = [UIColor blueColor];
             
             //[tempView addSubview:slider];//
-           [self.view addSubview:self->seekBar];
+           [self.frameGenerateView addSubview:self->seekBar];
 
             ///// bound view drawing
-            self->startBound = [[UIImageView alloc] initWithFrame:CGRectMake(10, SCREEN_HEIGHT-200, 20, 100)] ;
-            self->startBound.image = [UIImage imageNamed:@"StartArrow.png"];
+            self->startBound = [[UIImageView alloc] initWithFrame:CGRectMake(10,0,20, self->_frameGenerateView.frame.size
+                                                                             .height)] ;
+            self->startBound.image = [UIImage imageNamed:@"Group 640.png"];
             //self->startBound.backgroundColor = [ UIColor blueColor ];
-            self->endBound = [[UIImageView alloc] initWithFrame:CGRectMake(50, SCREEN_HEIGHT-200, 20, 100)];
-            self->endBound.image = [UIImage imageNamed:@"EndArrow.png"];
-            [self.view addSubview:self->startBound];
-            [self.view addSubview:self->endBound];
+            self->endBound = [[UIImageView alloc] initWithFrame:CGRectMake(50,0,20, self->_frameGenerateView.frame.size
+                                                                           .height)];
+            self->endBound.image = [UIImage imageNamed:@"Group 639.png"];
+            [self->_frameGenerateView addSubview:self->startBound];
+            [self->_frameGenerateView addSubview:self->endBound];
             self->sliderScroll.maximumValue = self->_scrollView.contentSize.width;
             NSLog(@"slide %f",self->sliderScroll.maximumValue);
             UIPanGestureRecognizer *startPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleStartPan:)];
             [self->startBound addGestureRecognizer:startPanGR];
             self->startBound.userInteractionEnabled = YES;
-            
+             UIView *tempView = [[UIView alloc]initWithFrame:(CGRect)CGRectMake(0, SCREEN_HEIGHT-200, 0.5, 0.5)];
+            [self.view addSubview:tempView];
             UIPanGestureRecognizer *endPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleEndPan:)];
             [self->endBound addGestureRecognizer:endPanGR];
             self->endBound.userInteractionEnabled = YES ;
@@ -109,7 +121,7 @@
             
             
             // _playerView.player = player;
-            [self.playerView setOk:[UIScreen mainScreen].bounds];
+            [self.playerView setOk:self->playerViewBound.bounds];
             [self.playerView setNeedsDisplay];
             [self.playerView setPlayer:self->player];
             
@@ -206,7 +218,7 @@
 - (void) PlayerSetPlayPause : (UIButton*)btn withPlayingStatus:(float)rate{
     if (rate) {
         [player pause];
-        [btn setTitle:@"Play" forState:UIControlStateNormal];
+     //   [btn setTitle:@"Play" forState:UIControlStateNormal];
         if (observer) {
             [player removeTimeObserver:observer];
             observer = nil;
@@ -215,7 +227,7 @@
         // [self.timer invalidate];
     }else{
         
-        [btn setTitle:@"Pause" forState:UIControlStateNormal];
+      //  [btn setTitle:@"Pause" forState:UIControlStateNormal];
         
         observer = [player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1/ 60.0, NSEC_PER_SEC)
                                                         queue:NULL
@@ -234,7 +246,7 @@
 - (void)itemDidFinishPlaying:(NSNotification *)notification {
     [player seekToTime:kCMTimeZero];
     player.rate = 0 ;
-    [playPause setTitle:@"Play" forState:UIControlStateNormal];
+  //  [playPause setTitle:@"Play" forState:UIControlStateNormal];
 }
 
 - (void)updateSlider {

@@ -10,6 +10,7 @@
 		4E031BCC2271B48200C41162 /* PlayerDisplayVCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E031BC62271B48100C41162 /* PlayerDisplayVCViewController.m */; };
 		4E031BCD2271B48200C41162 /* PlayerBC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E031BC92271B48200C41162 /* PlayerBC.m */; };
 		4E031BCE2271B48200C41162 /* thumbnailScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E031BCA2271B48200C41162 /* thumbnailScrollView.m */; };
+		4E1C0998227AE169009F637D /* customSegmentUX.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1C0997227AE169009F637D /* customSegmentUX.m */; };
 		4E3041D522782AA90080A6B2 /* StartArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3041D322782AA90080A6B2 /* StartArrow.png */; };
 		4E3041D622782AA90080A6B2 /* EndArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3041D422782AA90080A6B2 /* EndArrow.png */; };
 		4E7C16BE226F42F400605E18 /* imageShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E7C16BC226F42F400605E18 /* imageShowViewController.m */; };
@@ -52,6 +53,8 @@
 		4E031BC92271B48200C41162 /* PlayerBC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerBC.m; sourceTree = "<group>"; };
 		4E031BCA2271B48200C41162 /* thumbnailScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = thumbnailScrollView.m; sourceTree = "<group>"; };
 		4E031BCB2271B48200C41162 /* PlayerBC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerBC.h; sourceTree = "<group>"; };
+		4E1C0996227AE169009F637D /* customSegmentUX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = customSegmentUX.h; sourceTree = "<group>"; };
+		4E1C0997227AE169009F637D /* customSegmentUX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = customSegmentUX.m; sourceTree = "<group>"; };
 		4E3041D322782AA90080A6B2 /* StartArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StartArrow.png; sourceTree = "<group>"; };
 		4E3041D422782AA90080A6B2 /* EndArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EndArrow.png; sourceTree = "<group>"; };
 		4E7C16BB226F42F400605E18 /* imageShowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = imageShowViewController.h; sourceTree = "<group>"; };
@@ -140,6 +143,8 @@
 				4E7EE2AD226F0A0000EF8C99 /* PhotoCell.h */,
 				4E7EE2AE226F0A0000EF8C99 /* PhotoCell.m */,
 				4E7EE27A226EF24F00EF8C99 /* Main.storyboard */,
+				4E1C0996227AE169009F637D /* customSegmentUX.h */,
+				4E1C0997227AE169009F637D /* customSegmentUX.m */,
 				4E7EE27D226EF25000EF8C99 /* Assets.xcassets */,
 				4E3041D322782AA90080A6B2 /* StartArrow.png */,
 				4E3041D422782AA90080A6B2 /* EndArrow.png */,
@@ -328,6 +333,7 @@
 				4E7C16BE226F42F400605E18 /* imageShowViewController.m in Sources */,
 				4E7EE276226EF24F00EF8C99 /* AppDelegate.m in Sources */,
 				4E031BCE2271B48200C41162 /* thumbnailScrollView.m in Sources */,
+				4E1C0998227AE169009F637D /* customSegmentUX.m in Sources */,
 				4E031BCC2271B48200C41162 /* PlayerDisplayVCViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

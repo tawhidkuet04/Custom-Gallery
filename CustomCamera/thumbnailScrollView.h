@@ -13,9 +13,15 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)updateTotalTime:(double)totalTime;
 
 @end
-@interface thumbnailScrollView : UIScrollView<UIScrollViewDelegate,UIScrollViewAccessibilityDelegate>
+@interface thumbnailScrollView : UIScrollView<UIScrollViewDelegate,UIScrollViewAccessibilityDelegate>{
+    double  totalFrame  ;
+    int oneframeTakeTime;
+    bool flag ;
+    int framePerSec;
+    
+}
 @property(weak,nonatomic) id <playerDisplayVCViewControllerDelegate> delegator ;
-- (id)initWithFrame:(CGRect)frame withDelegate:(id<playerDisplayVCViewControllerDelegate>) delegate andAsset:(AVAsset *)asset;
+- (id)initWithFrame:(CGRect)frame withDelegate:(id<playerDisplayVCViewControllerDelegate>) delegate andAsset:(AVAsset *)asset  frameView:(UIView *) frameGenerateView;
 -(void) generateFramefromvideo: (AVAsset *) movieAsset;
 @end
 

@@ -12,7 +12,7 @@
 #import <Photos/Photos.h>
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PlayerDisplayVCViewController : UIViewController<UIScrollViewDelegate>{
+@interface PlayerDisplayVCViewController : UIViewController{
     double videoTotalTime;
     bool playOrPause;
 }
@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) NSTimer *timer;
 @property (strong , nonatomic ) thumbnailScrollView *scrollView;
 @property( strong , nonatomic ) PHAsset *passet;
+@property (strong, nonatomic) IBOutlet UIView *frameGenerateView;
+
 - (void)updateSlider;
 @end
 

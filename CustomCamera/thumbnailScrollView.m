@@ -12,17 +12,28 @@
 #define SCREEN_HEIGHT ([[UIScreen mainScreen] bounds].size.height)
 #define SCREEN_MAX_LENGTH (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
 #define SCREEN_MIN_LENGTH (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
+
 @implementation thumbnailScrollView
-- (id)initWithFrame:(CGRect)frame withDelegate:(id<playerDisplayVCViewControllerDelegate>) delegate andAsset:(AVAsset *)asset {
+- (id)initWithFrame:(CGRect)frame withDelegate:(id<playerDisplayVCViewControllerDelegate>) delegate andAsset:(AVAsset *)asset  frameView:(UIView *) frameGenerateView{
     self = [super initWithFrame:frame];
     self.backgroundColor = [ UIColor clearColor ];
     //self.scrollEnabled = FALSE;
     ///scroll view container size calculation
     CMTime duration;
     duration = asset.duration;
+    flag = false ;
     float totalTime = CMTimeGetSeconds(duration);
     //NSLog(@"total time here %f %f",totalTime,ceil(totalTime*(3))*100);
-    self.contentSize= CGSizeMake(totalTime*(1)*100, 100);
+    totalFrame = frameGenerateView.frame.size.width/frameGenerateView.frame.size.height;
+    oneframeTakeTime = totalTime/totalFrame;
+    if ( oneframeTakeTime < 1){
+        flag = true ;
+        framePerSec = totalFrame/totalTime;
+        if(framePerSec*totalTime < totalFrame){
+            framePerSec += 1;
+        }
+    }
+    self.contentSize= CGSizeMake(totalFrame*frameGenerateView.frame.size.height, frameGenerateView.frame.size.height);
     
    // NSLog(@"aaaaaaaaaa %f",totalTime*(5)*100);
     NSLog(@"ok aise");
@@ -58,7 +69,7 @@
     float imgHeight = self.frame.size.height;
     float imgWidth =self.frame.size.height ;
     //imgHeight * (size.width/size.height);
-    size = CGSizeMake(imgWidth * [UIScreen mainScreen].scale, imgHeight * [UIScreen mainScreen].scale);
+    size = CGSizeMake(imgWidth * [UIScreen mainScreen].scale *1.5, imgHeight * [UIScreen mainScreen].scale*1.5 );
 
     //    size = CGSizeMake(imgWidth, imgHeight);
     AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
@@ -72,19 +83,30 @@
     originalSize = CGSizeMake(fabs(originalSize.width), fabs(originalSize.height));
     
     
-    CGFloat scaleX = size.width / originalSize.width;
+    CGFloat scaleX = (size.width / originalSize.width)*2;
+    CGFloat scaleY = size.height /originalSize.height;
 
     CGAffineTransform origTrans = videoCompositionTrack.preferredTransform;
-    CGAffineTransform scaleTrans = CGAffineTransformConcat(origTrans, CGAffineTransformMakeScale(scaleX, scaleX));
+    CGAffineTransform scaleTrans;
+    if(originalSize.height < originalSize.width){
+             scaleTrans = CGAffineTransformConcat(origTrans, CGAffineTransformMakeScale(scaleX, scaleY));
+    }else{
+             scaleTrans = CGAffineTransformConcat(origTrans, CGAffineTransformMakeScale(scaleX/2, scaleX/2));
+    }
 
     
     [transformer setTransform:scaleTrans atTime:kCMTimeZero];
     
     
     instruction.layerInstructions = [NSArray arrayWithObject:transformer];
-    
+
     AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-    videoComposition.frameDuration = CMTimeMake(1, 1);
+    if(flag){
+        videoComposition.frameDuration = CMTimeMake( 1,framePerSec);
+    }else {
+        videoComposition.frameDuration = CMTimeMake( oneframeTakeTime,1);
+    }
+    
     videoComposition.renderSize = size ;
     videoComposition.instructions = [NSArray arrayWithObject:instruction];
     
@@ -120,13 +142,14 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 UIImageView *imgV = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:newImage]];
-                [self addSubview:imgV];
+                
                 NSLog(@"frame number: %d",i);
                 
                 j = i ;
                 imgV.frame = CGRectMake(imgWidth * i++ , 0, imgWidth, imgHeight);
                // NSLog(@"ff %f",imgWidth *j);
                 [imgV setContentMode:UIViewContentModeScaleAspectFill];
+                [self addSubview:imgV];
                 
             });
         }
