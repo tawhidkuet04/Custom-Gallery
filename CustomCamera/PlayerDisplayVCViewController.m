@@ -25,6 +25,9 @@
     ////// range bar start and end
     UIImageView *startBound;
     UIImageView *endBound;
+    
+    ///////
+    UIImage *timeShow;
 }
 
 @end
@@ -68,7 +71,7 @@
 //            [self.view addSubview:tempView];
             // seekbar initialiaztion
             //(void)(self->posX = 0) ,self->currentTime = 0 ;
-            self->seekBar = [[UIView alloc] initWithFrame:CGRectMake(30, SCREEN_HEIGHT-200, 10, 100)];
+            self->seekBar = [[UIView alloc] initWithFrame:CGRectMake(30, SCREEN_HEIGHT-200, 2, 100)];
             self->seekBar.backgroundColor = [UIColor greenColor];
             
             //[tempView addSubview:slider];//
@@ -91,6 +94,8 @@
             UIPanGestureRecognizer *endPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleEndPan:)];
             [self->endBound addGestureRecognizer:endPanGR];
             self->endBound.userInteractionEnabled = YES ;
+
+            /////// play time show view initialization
             
           
            // [seekBar setCenter:CGPointMake(25,seekBar.center.y)];
@@ -98,7 +103,7 @@
             self->playerItem = [AVPlayerItem playerItemWithAsset:self->asset];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:self->playerItem];
             self->player = [AVPlayer playerWithPlayerItem:self->playerItem];
-            [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(25+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+            [self->player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(25+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
             //  player.frame = self.playerView.bounds;
             // __weak NSObject *weakSelf = self;
             
@@ -114,7 +119,12 @@
     
     
 }
-
+-(void)handleScrollPan:(UIPanGestureRecognizer *)recognizer{
+    
+      NSLog(@"asdasdasdasd");
+    //   [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
+  
+}
 -(void)handleStartPan:(UIPanGestureRecognizer *)recognizer{
     
   //  NSLog(@"asdasdasdasd");
@@ -137,8 +147,14 @@
     pannedView.center = point;
     NSLog(@"start touch %f seekbar %f ",point.x-10,seekBar.center.x-5);
     [recognizer setTranslation:CGPointZero inView:pannedView.superview];
+      [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
+    if(recognizer.state == UIGestureRecognizerStateEnded)
+    {
+          [seekBar setCenter:CGPointMake(point.x+11,seekBar.center.y)];
+        //All fingers are lifted.
+    }
     [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(point.x+10+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-    [seekBar setCenter:CGPointMake(point.x+15,seekBar.center.y)];
+  
 }
 
 -(void)handleEndPan:(UIPanGestureRecognizer *)recognizer{
@@ -162,6 +178,13 @@
    // NSLog(@"start point %f end oint %f",starBoundVal.origin.x,point.x);
     pannedView.center = point;
     [recognizer setTranslation:CGPointZero inView:pannedView.superview];
+    [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
+    if(recognizer.state == UIGestureRecognizerStateEnded)
+    {
+      [seekBar setCenter:CGPointMake(starBoundVal.origin.x+21,seekBar.center.y)];
+    }
+    [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(starBoundVal.origin.x+20+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    
   
 }
 - (void)viewWillAppear:(BOOL)animated{
@@ -231,8 +254,6 @@
     double seekbarAtXPosition = (SCREEN_WIDTH/timeNeededForScreenWidth)*(time-timeNeededForOffset);
     //NSLog(@"x--- %f y--- %f",x,thumbRect.origin.y);
    // _scrollView.contentOffset= CGPointMake( x,thumbRect.origin.y + 2);
-
-     CGRect st = startBound.frame;
      //NSLog(@"start %f end %f x %f",st.origin.x-10,x);
      [seekBar setCenter:CGPointMake( seekbarAtXPosition ,seekBar.center.y)];
     //  NSLog(@"cur %f",slider.value);
@@ -242,7 +263,7 @@
     if(x>endBoundVal.origin.x-5+_scrollView.contentOffset.x){
           CGRect starBoundVal = startBound.frame;
           [self PlayerSetPlayPause:playPause withPlayingStatus:1];
-          [seekBar setCenter:CGPointMake( starBoundVal.origin.x+25  ,seekBar.center.y)];
+          [seekBar setCenter:CGPointMake( starBoundVal.origin.x+21  ,seekBar.center.y)];
           [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(starBoundVal.origin.x+20+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
         
     }
@@ -273,14 +294,14 @@
    
     
 }
-
 - (IBAction)scrollSliderEnd:(id)sender {
     CGRect starBoundVal = startBound.frame;
-    [seekBar setCenter:CGPointMake( starBoundVal.origin.x+25  ,seekBar.center.y)];
+    [seekBar setCenter:CGPointMake( starBoundVal.origin.x+21 ,seekBar.center.y)];
     [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(starBoundVal.origin.x+20+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 }
-
-
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    NSLog(@"touch hoise");
+}
 @end
 
 

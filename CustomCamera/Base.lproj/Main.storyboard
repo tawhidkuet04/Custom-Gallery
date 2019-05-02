@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="YbH-wp-wnW">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -15,7 +15,7 @@
             <objects>
                 <navigationController id="YbH-wp-wnW" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="wH4-VX-NSS">
-                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -31,11 +31,11 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ML4-J7-lsh">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="64" width="414" height="672"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="X6b-KI-8CQ">
                                     <size key="itemSize" width="123" height="123"/>
@@ -74,7 +74,7 @@
                                 </connections>
                             </collectionView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="uB3-1p-oPn">
-                                <rect key="frame" x="131.5" y="589" width="112.5" height="29"/>
+                                <rect key="frame" x="145" y="589" width="124" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="uB3-1p-oPn" secondAttribute="height" multiplier="121:27" id="PTP-ya-tjq"/>
                                 </constraints>
@@ -113,11 +113,11 @@
             <objects>
                 <viewController id="b85-0O-GyJ" customClass="videoShowViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="c2W-gT-QVc">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cYC-Cy-GZs">
-                                <rect key="frame" x="0.0" y="95" width="375" height="211"/>
+                                <rect key="frame" x="0.0" y="95" width="414" height="211"/>
                                 <color key="backgroundColor" red="0.11813876299999999" green="0.11813876299999999" blue="0.11813876299999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="211" id="jiv-Lf-AoG"/>
@@ -142,14 +142,14 @@
             <objects>
                 <viewController storyboardIdentifier="PlayerDisplayVCViewController" id="0RK-jV-eeq" customClass="PlayerDisplayVCViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Hab-fo-XPW">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OMI-ic-5Ip" customClass="PlayerBC">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3TD-ia-kkV">
-                                        <rect key="frame" x="30" y="30" width="75" height="23"/>
+                                        <rect key="frame" x="30.000000000000007" y="30" width="82.666666666666686" height="25.333333333333329"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="3TD-ia-kkV" secondAttribute="height" multiplier="62:19" id="Msy-Ri-hKI"/>
@@ -160,8 +160,8 @@
                                         </connections>
                                     </button>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="FOE-X6-upg">
-                                        <rect key="frame" x="-2" y="637.5" width="379" height="30.5"/>
-                                        <color key="backgroundColor" red="1" green="0.2527923882" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <rect key="frame" x="-2" y="703.33333333333337" width="418" height="33.666666666666629"/>
+                                        <color key="backgroundColor" red="0.2391130511" green="0.61378969829999996" blue="0.83264714480000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="FOE-X6-upg" secondAttribute="height" multiplier="517:41" id="m29-vg-UCp"/>
                                         </constraints>
@@ -172,13 +172,14 @@
                                         </connections>
                                     </slider>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Hg-St-y8a">
-                                        <rect key="frame" x="131.5" y="581" width="112.5" height="56.5"/>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        <rect key="frame" x="145" y="654.66666666666663" width="124" height="41.666666666666629"/>
+                                        <color key="backgroundColor" red="0.2391130511" green="0.61378969829999996" blue="0.83264714480000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="0Hg-St-y8a" secondAttribute="height" multiplier="2:1" id="xOe-j6-tj3"/>
+                                            <constraint firstAttribute="width" secondItem="0Hg-St-y8a" secondAttribute="height" multiplier="3:1" id="xOe-j6-tj3"/>
                                         </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="21"/>
                                         <state key="normal" title="Play">
-                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="titleColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                         </state>
                                         <connections>
                                             <action selector="playPauseAction:" destination="0RK-jV-eeq" eventType="touchUpInside" id="eCe-Ps-624"/>
@@ -188,7 +189,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="0Hg-St-y8a" firstAttribute="width" secondItem="OMI-ic-5Ip" secondAttribute="width" multiplier="0.3" id="G8G-Ee-Yed"/>
-                                    <constraint firstItem="FOE-X6-upg" firstAttribute="top" secondItem="0Hg-St-y8a" secondAttribute="bottom" id="IGW-cY-ZgH"/>
+                                    <constraint firstItem="FOE-X6-upg" firstAttribute="top" secondItem="0Hg-St-y8a" secondAttribute="bottom" constant="7" id="IGW-cY-ZgH"/>
                                     <constraint firstItem="3TD-ia-kkV" firstAttribute="leading" secondItem="OMI-ic-5Ip" secondAttribute="leading" constant="30" id="Rvw-Vi-vo0"/>
                                     <constraint firstItem="3TD-ia-kkV" firstAttribute="top" secondItem="OMI-ic-5Ip" secondAttribute="top" constant="30" id="SF5-ck-UHX"/>
                                     <constraint firstItem="FOE-X6-upg" firstAttribute="width" secondItem="OMI-ic-5Ip" secondAttribute="width" id="XPY-Qy-fs3"/>
@@ -218,6 +219,36 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VdJ-mF-mkb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="881" y="27"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="U4m-mr-fi2">
+            <objects>
+                <viewController id="INf-KJ-U3L" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Rtt-kl-gPU">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tXD-O6-9Vl">
+                                <rect key="frame" x="0.0" y="687" width="414" height="49"/>
+                                <color key="backgroundColor" red="0.14082518219947815" green="0.14082953333854675" blue="0.14082720875740051" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="tXD-O6-9Vl" secondAttribute="height" multiplier="414:49" id="XVR-LV-ggQ"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="7au-xt-7W1" firstAttribute="trailing" secondItem="tXD-O6-9Vl" secondAttribute="trailing" id="3G3-jR-97J"/>
+                            <constraint firstItem="7au-xt-7W1" firstAttribute="bottom" secondItem="tXD-O6-9Vl" secondAttribute="bottom" id="E1b-nV-HqM"/>
+                            <constraint firstItem="tXD-O6-9Vl" firstAttribute="leading" secondItem="7au-xt-7W1" secondAttribute="leading" id="Uhl-Lh-iLz"/>
+                            <constraint firstItem="tXD-O6-9Vl" firstAttribute="width" secondItem="Rtt-kl-gPU" secondAttribute="width" id="VeE-NA-Cjd"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="7au-xt-7W1"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="K2Q-4H-aBr" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1753" y="27"/>
         </scene>
     </scenes>
 </document>
