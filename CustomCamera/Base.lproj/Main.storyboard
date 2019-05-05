@@ -233,7 +233,7 @@
                                 <subviews>
                                     <tabBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c1k-OY-eZX">
                                         <rect key="frame" x="0.0" y="187" width="414" height="49"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" red="0.14117647058823529" green="0.14117647058823529" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="c1k-OY-eZX" secondAttribute="height" multiplier="414:49" id="Sak-Js-Tew"/>
                                         </constraints>
@@ -241,6 +241,9 @@
                                             <tabBarItem systemItem="favorites" id="Gwp-7j-O0C"/>
                                             <tabBarItem systemItem="more" id="gUu-mi-Ip2"/>
                                         </items>
+                                        <color key="tintColor" red="0.16078431369999999" green="0.16078431369999999" blue="0.16078431369999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="barTintColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
+                                        <color key="selectedImageTintColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
                                     </tabBar>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZJS-sT-CaK">
                                         <rect key="frame" x="0.0" y="161" width="414" height="26"/>
@@ -266,7 +269,7 @@
                                                 </constraints>
                                             </view>
                                         </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="MP6-03-F3w" firstAttribute="width" secondItem="DwX-J3-E2N" secondAttribute="width" multiplier="382/414" id="ATt-fA-mrI"/>
                                             <constraint firstItem="MP6-03-F3w" firstAttribute="centerX" secondItem="DwX-J3-E2N" secondAttribute="centerX" id="LVz-Ih-EUh"/>
@@ -290,9 +293,9 @@
                                                     <constraint firstAttribute="width" secondItem="Atr-7s-2w4" secondAttribute="height" multiplier="72:7" id="cFe-av-Jgg"/>
                                                 </constraints>
                                                 <segments>
-                                                    <segment title="First"/>
-                                                    <segment title="Second"/>
-                                                    <segment title=""/>
+                                                    <segment title="TRIM"/>
+                                                    <segment title="CUT"/>
+                                                    <segment title="SPLIT"/>
                                                 </segments>
                                                 <color key="tintColor" red="0.30196078431372547" green="0.30196078431372547" blue="0.30196078431372547" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </segmentedControl>
@@ -305,8 +308,24 @@
                                             <constraint firstAttribute="width" secondItem="LPh-EZ-1NU" secondAttribute="height" multiplier="207:16" id="ySO-Vi-dLa"/>
                                         </constraints>
                                     </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TOTAL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vMG-eB-Gsz">
+                                        <rect key="frame" x="307" y="88.666666666666629" width="91" height="14"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="vMG-eB-Gsz" secondAttribute="height" multiplier="13:2" id="hgr-Ie-1tD"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <color key="textColor" red="0.35819172859191895" green="0.35848766565322876" blue="0.35823759436607361" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O09-TB-eN0">
+                                        <rect key="frame" x="94" y="85" width="83" height="14"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <color key="textColor" red="0.33649608492851257" green="0.33650475740432739" blue="0.33650004863739014" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
-                                <color key="backgroundColor" red="0.16078431372549018" green="0.16078431372549018" blue="0.16078431372549018" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.16282719373703003" green="0.16298320889472961" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="ZJS-sT-CaK" firstAttribute="top" secondItem="DwX-J3-E2N" secondAttribute="bottom" id="1bE-eF-ald"/>
@@ -314,6 +333,7 @@
                                     <constraint firstAttribute="bottom" secondItem="c1k-OY-eZX" secondAttribute="bottom" id="4zo-Gc-eA2"/>
                                     <constraint firstAttribute="trailing" secondItem="ZJS-sT-CaK" secondAttribute="trailing" id="9Ly-F4-D3j"/>
                                     <constraint firstItem="DwX-J3-E2N" firstAttribute="leading" secondItem="510-aO-aLl" secondAttribute="leading" id="9rw-BZ-Ch0"/>
+                                    <constraint firstItem="DwX-J3-E2N" firstAttribute="top" secondItem="vMG-eB-Gsz" secondAttribute="bottom" constant="8.3300000000000001" id="C3p-m8-lOQ"/>
                                     <constraint firstItem="5As-rz-lXn" firstAttribute="leading" secondItem="510-aO-aLl" secondAttribute="leading" id="Dtz-da-M2N"/>
                                     <constraint firstAttribute="width" secondItem="510-aO-aLl" secondAttribute="height" multiplier="207:118" id="HOc-1G-6ap"/>
                                     <constraint firstItem="ZJS-sT-CaK" firstAttribute="leading" secondItem="510-aO-aLl" secondAttribute="leading" id="QQn-gR-b2z"/>
@@ -321,6 +341,7 @@
                                     <constraint firstItem="c1k-OY-eZX" firstAttribute="leading" secondItem="510-aO-aLl" secondAttribute="leading" id="TLj-PN-htF"/>
                                     <constraint firstAttribute="trailing" secondItem="LPh-EZ-1NU" secondAttribute="trailing" id="Tne-Hz-w12"/>
                                     <constraint firstItem="c1k-OY-eZX" firstAttribute="top" secondItem="ZJS-sT-CaK" secondAttribute="bottom" id="XUD-wd-HFK"/>
+                                    <constraint firstItem="vMG-eB-Gsz" firstAttribute="trailing" secondItem="MP6-03-F3w" secondAttribute="trailing" id="cB3-fV-VkB"/>
                                     <constraint firstItem="LPh-EZ-1NU" firstAttribute="top" secondItem="5As-rz-lXn" secondAttribute="bottom" id="eFy-Sz-pLZ"/>
                                     <constraint firstItem="LPh-EZ-1NU" firstAttribute="leading" secondItem="510-aO-aLl" secondAttribute="leading" id="jq2-Qq-8Eq"/>
                                     <constraint firstItem="5As-rz-lXn" firstAttribute="top" secondItem="510-aO-aLl" secondAttribute="top" id="l1W-lE-NWu"/>
@@ -358,7 +379,8 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.19607843137254902" green="0.19804224371910095" blue="0.19803926348686218" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.2006070613861084" green="0.20079019665718079" blue="0.20063543319702148" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="7au-xt-7W1" firstAttribute="bottom" secondItem="510-aO-aLl" secondAttribute="bottom" id="5mX-Yv-LzU"/>
                             <constraint firstItem="UAT-Fo-uwf" firstAttribute="leading" secondItem="7au-xt-7W1" secondAttribute="leading" id="8Tf-0r-Tav"/>
@@ -374,8 +396,11 @@
                     </view>
                     <connections>
                         <outlet property="frameGenerateView" destination="MP6-03-F3w" id="mpX-Ct-yaD"/>
+                        <outlet property="outsideOfFrameGenerateView" destination="DwX-J3-E2N" id="6wv-xD-bb8"/>
                         <outlet property="playPause" destination="mLB-tF-fHd" id="qWw-00-1Cp"/>
                         <outlet property="playerView" destination="UAT-Fo-uwf" id="UYe-jE-ysP"/>
+                        <outlet property="toast" destination="O09-TB-eN0" id="WRq-43-swq"/>
+                        <outlet property="totalTimeShowLable" destination="vMG-eB-Gsz" id="OKG-qK-Ntj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="K2Q-4H-aBr" userLabel="First Responder" sceneMemberID="firstResponder"/>

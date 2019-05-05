@@ -31,8 +31,15 @@
 //    });
 //    return library;
 //}
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES
+                                            withAnimation:UIStatusBarAnimationFade];
     flag = false ;
     // Do any additional setup after loading the view, typically from a nib.
     _assets = [@[]mutableCopy];  // NSArray *array = @[]; ---> NSArray *array [[NSArray alloc] init];

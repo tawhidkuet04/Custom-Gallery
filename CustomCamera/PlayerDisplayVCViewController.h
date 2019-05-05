@@ -23,6 +23,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property( strong , nonatomic ) PHAsset *passet;
 @property (strong, nonatomic) IBOutlet UIView *frameGenerateView;
 
+@property (strong, nonatomic) IBOutlet UIView *outsideOfFrameGenerateView;
+@property (strong, nonatomic) IBOutlet UILabel *totalTimeShowLable;
+@property (strong, nonatomic) IBOutlet UILabel *toast;
+
 - (void)updateSlider;
 @end
 

@@ -24,6 +24,7 @@
     flag = false ;
     float totalTime = CMTimeGetSeconds(duration);
     //NSLog(@"total time here %f %f",totalTime,ceil(totalTime*(3))*100);
+    NSLog(@"hhhh %f %f",frameGenerateView.frame.size.height,frameGenerateView.frame.size.width);
     totalFrame = frameGenerateView.frame.size.width/frameGenerateView.frame.size.height;
     oneframeTakeTime = totalTime/totalFrame;
     if ( oneframeTakeTime < 1){
@@ -33,6 +34,7 @@
             framePerSec += 1;
         }
     }
+    NSLog(@"fram %d %d",framePerSec,oneframeTakeTime);
     self.contentSize= CGSizeMake(totalFrame*frameGenerateView.frame.size.height, frameGenerateView.frame.size.height);
     
    // NSLog(@"aaaaaaaaaa %f",totalTime*(5)*100);
@@ -102,11 +104,12 @@
 
     AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
     if(flag){
-        videoComposition.frameDuration = CMTimeMake( 1,framePerSec);
+        NSLog(@"nominal %d",videoCompositionTrack.nominalFrameRate);
+        videoComposition.frameDuration = CMTimeMakeWithSeconds(videoCompositionTrack.nominalFrameRate, 1);
     }else {
-        videoComposition.frameDuration = CMTimeMake( oneframeTakeTime,1);
+        videoComposition.frameDuration = CMTimeMakeWithSeconds( oneframeTakeTime,1);
     }
-    
+    instruction.timeRange = videoCompositionTrack.timeRange;
     videoComposition.renderSize = size ;
     videoComposition.instructions = [NSArray arrayWithObject:instruction];
     
@@ -152,6 +155,7 @@
                 [self addSubview:imgV];
                 
             });
+            
         }
     });
     
