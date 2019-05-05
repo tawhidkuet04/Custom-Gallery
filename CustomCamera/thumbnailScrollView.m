@@ -17,12 +17,14 @@
 - (id)initWithFrame:(CGRect)frame withDelegate:(id<playerDisplayVCViewControllerDelegate>) delegate andAsset:(AVAsset *)asset  frameView:(UIView *) frameGenerateView{
     self = [super initWithFrame:frame];
     self.backgroundColor = [ UIColor clearColor ];
+    
+     imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
     //self.scrollEnabled = FALSE;
     ///scroll view container size calculation
-    CMTime duration;
+    
     duration = asset.duration;
     flag = false ;
-    float totalTime = CMTimeGetSeconds(duration);
+    totalTime = CMTimeGetSeconds(duration);
     //NSLog(@"total time here %f %f",totalTime,ceil(totalTime*(3))*100);
     NSLog(@"hhhh %f %f",frameGenerateView.frame.size.height,frameGenerateView.frame.size.width);
     totalFrame = frameGenerateView.frame.size.width/frameGenerateView.frame.size.height;
@@ -50,116 +52,135 @@
     
     return self ;
 }
+// Get Image From Asset with CMTime
+- (UIImage*) getImageFromAsset:(AVAsset*)asset atTime:(CMTime)cmTime {
+    
+    // Image Generator
+    imageGenerator.maximumSize = CGSizeMake(300, 300);
+    
+    CMTime actualTime;
+    CGImageRef imageRef = [imageGenerator copyCGImageAtTime:cmTime actualTime:&actualTime error:nil];
+    UIImage *image = [UIImage imageWithCGImage: imageRef scale: 1.0 orientation: [self orientTheFrame:asset]];
+    CGImageRelease(imageRef);
+    
+    return image;
+}
 
--(void) generateFramefromvideo: (AVAsset *) movieAsset
+// Get Video Orientation
+- (UIImageOrientation) orientTheFrame : (AVAsset *) asset{
+    if([self getVideoOrientationFromAsset:asset] == UIImageOrientationUp)
+        return UIImageOrientationRight;
+    if([self getVideoOrientationFromAsset:asset] == UIImageOrientationLeft)
+        return UIImageOrientationDown;
+    return UIImageOrientationUp;
+}
+- (UIImageOrientation)getVideoOrientationFromAsset:(AVAsset *)asset
 {
+    AVAssetTrack *videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    CGSize size = [videoTrack naturalSize];
+    CGAffineTransform txf = [videoTrack preferredTransform];
     
-    
-    NSLog(@"I am here");
-    
-    AVAssetTrack *videoAssetTrack= [[movieAsset tracksWithMediaType:AVMediaTypeVideo] lastObject];
-    NSError *error;
-    __block int i = 0,j=0;
+    if (size.width == txf.tx && size.height == txf.ty)
+        return UIImageOrientationLeft; //return UIInterfaceOrientationLandscapeLeft;
+    else if (txf.tx == 0 && txf.ty == 0)
+        return UIImageOrientationRight; //return UIInterfaceOrientationLandscapeRight;
+    else if (txf.tx == 0 && txf.ty == size.width)
+        return UIImageOrientationDown; //return UIInterfaceOrientationPortraitUpsideDown;
+    else
+        return UIImageOrientationUp;  //return UIInterfaceOrientationPortrait;
+}
+
+-(void) generateFramefromvideo: (AVAsset *) movieAsset{
+//    __block int j = 0 ;
+//    float imgWidth = self.frame.size.height;
+//    float imgHeight = self.frame.size.height;
+//    AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:movieAsset];
+//    generator.requestedTimeToleranceAfter =  kCMTimeZero;
+//    generator.requestedTimeToleranceBefore =  kCMTimeZero;
+//    __block UIImage *generatedImage;
+//    __block UIImageView *imgV ;
     AVMutableComposition *com = [AVMutableComposition composition];
-    AVMutableCompositionTrack *videoCompositionTrack = [com addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+   AVMutableCompositionTrack *videoCompositionTrack = [com addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, movieAsset.duration) ofTrack:[[movieAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
+//
+//    float frameDifference = CMTimeGetSeconds(movieAsset.duration) * videoCompositionTrack.nominalFrameRate / totalFrame ;
+//    __block float frame = 0;
+//    for (Float64 i = 0; i < CMTimeGetSeconds(movieAsset.duration) * videoCompositionTrack.nominalFrameRate   ; i++){
+//
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//             @autoreleasepool {
+//                 CMTime time ;
+//
+//            time= CMTimeMake(i+20,videoCompositionTrack.nominalFrameRate);
+//                 frame += frameDifference;
+//            NSError *err;
+//            CMTime actualTime;
+//            CGImageRef image = [generator copyCGImageAtTime:time actualTime:&actualTime error:&err];
+//            generatedImage = [[UIImage alloc] initWithCGImage:image];
+//
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//
+//                imgV = [[UIImageView alloc] initWithImage:generatedImage];
+//
+//                NSLog(@"frame number: %f",i);
+//
+//                imgV.frame = CGRectMake(imgWidth * j++ , 0, imgWidth, imgHeight);
+//                // NSLog(@"ff %f",imgWidth *j);
+//                [imgV setContentMode:UIViewContentModeScaleAspectFill];
+//                [self addSubview:imgV];
+//
+//
+//            });
+//            CGImageRelease(image);
+//             }
+//
+//        });
+//
+//
+//
+//    }
+
     
-    //Video asset er
-    videoCompositionTrack.preferredTransform = videoAssetTrack.preferredTransform;
-    AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:com error:&error];
-    CGSize size = videoCompositionTrack.naturalSize;
+    // Image Width from height with ratio
     float imgHeight = self.frame.size.height;
-    float imgWidth =self.frame.size.height ;
-    //imgHeight * (size.width/size.height);
-    size = CGSizeMake(imgWidth * [UIScreen mainScreen].scale *1.5, imgHeight * [UIScreen mainScreen].scale*1.5 );
-
-    //    size = CGSizeMake(imgWidth, imgHeight);
-    AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-    instruction.timeRange = CMTimeRangeMake(kCMTimeZero, com.duration);
+    float imgWidth = imgHeight;
     
-    AVMutableVideoCompositionLayerInstruction* transformer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoCompositionTrack];
+    // Time distance per frame
+    float frameRate = videoCompositionTrack.nominalFrameRate;
+    int totalFrames = CMTimeGetSeconds(movieAsset.duration) * videoCompositionTrack.nominalFrameRate ;
+    NSLog(@"tota %f %d",totalTime,totalFrames);
+    Float64 timePerFrame = totalTime/totalFrames;
+    __block Float64 timePerFrameInThatBound =totalTime/totalFrame;
+    NSLog(@"bounr time %f",timePerFrameInThatBound);
+    __block Float64 timeStart = 0 ;
     
-    
-
-    CGSize originalSize = CGSizeApplyAffineTransform(videoCompositionTrack.naturalSize, videoCompositionTrack.preferredTransform);
-    originalSize = CGSizeMake(fabs(originalSize.width), fabs(originalSize.height));
-    
-    
-    CGFloat scaleX = (size.width / originalSize.width)*2;
-    CGFloat scaleY = size.height /originalSize.height;
-
-    CGAffineTransform origTrans = videoCompositionTrack.preferredTransform;
-    CGAffineTransform scaleTrans;
-    if(originalSize.height < originalSize.width){
-             scaleTrans = CGAffineTransformConcat(origTrans, CGAffineTransformMakeScale(scaleX, scaleY));
-    }else{
-             scaleTrans = CGAffineTransformConcat(origTrans, CGAffineTransformMakeScale(scaleX/2, scaleX/2));
-    }
-
-    
-    [transformer setTransform:scaleTrans atTime:kCMTimeZero];
-    
-    
-    instruction.layerInstructions = [NSArray arrayWithObject:transformer];
-
-    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-    if(flag){
-        NSLog(@"nominal %d",videoCompositionTrack.nominalFrameRate);
-        videoComposition.frameDuration = CMTimeMakeWithSeconds(videoCompositionTrack.nominalFrameRate, 1);
-    }else {
-        videoComposition.frameDuration = CMTimeMakeWithSeconds( oneframeTakeTime,1);
-    }
-    instruction.timeRange = videoCompositionTrack.timeRange;
-    videoComposition.renderSize = size ;
-    videoComposition.instructions = [NSArray arrayWithObject:instruction];
-    
-    AVAssetReaderVideoCompositionOutput *assetReaderVideoCompositionOutput = [[AVAssetReaderVideoCompositionOutput alloc] initWithVideoTracks:[com tracksWithMediaType:AVMediaTypeVideo] videoSettings:@{(id)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA),
-                                                                                                                                                                                                         (id)kCVPixelBufferWidthKey : [NSNumber numberWithFloat:size.width],
-                                                                                                                                                                                                         (id)kCVPixelBufferHeightKey: [NSNumber numberWithFloat:size.height]
-                                                                                                                                                                                                         }];
-    assetReaderVideoCompositionOutput.videoComposition = videoComposition;
-    assetReaderVideoCompositionOutput.alwaysCopiesSampleData = NO;
-    [reader addOutput:assetReaderVideoCompositionOutput];
-    
-    [reader startReading];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSLog(@"%ld",(long)reader.status);
+    dispatch_queue_t queueHigh = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
+    dispatch_async(queueHigh, ^{
         
-        while (reader.status == AVAssetReaderStatusReading) {
-            CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(assetReaderVideoCompositionOutput.copyNextSampleBuffer);
-            CVPixelBufferLockBaseAddress(imageBuffer,0);        // Lock the image buffer
+        
+        //Step through the frames
+        for (int counter = 0; counter < (ceil(totalFrame)); counter++){
+            if( counter == (ceil(totalFrame)) - 1){
+                timeStart = totalTime ;
+            }
+             NSLog(@"bhbh %f %f",timeStart,totalTime);
+            UIImage *img = [self getImageFromAsset:movieAsset atTime:CMTimeMakeWithSeconds(timeStart , 600)];
             
-            uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);   // Get information of the image
-            size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-            size_t width = CVPixelBufferGetWidth(imageBuffer);
-            size_t height = CVPixelBufferGetHeight(imageBuffer);
-            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-            
-            CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-            CGImageRef newImage = CGBitmapContextCreateImage(newContext);
-            CGContextRelease(newContext);
-            
-            CGColorSpaceRelease(colorSpace);
-            CVPixelBufferUnlockBaseAddress(imageBuffer,0);
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
+            timeStart += timePerFrameInThatBound;
+           
+            dispatch_sync(dispatch_get_main_queue(), ^{
                 
-                UIImageView *imgV = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:newImage]];
-                
-                NSLog(@"frame number: %d",i);
-                
-                j = i ;
-                imgV.frame = CGRectMake(imgWidth * i++ , 0, imgWidth, imgHeight);
-               // NSLog(@"ff %f",imgWidth *j);
-                [imgV setContentMode:UIViewContentModeScaleAspectFill];
+                UIImageView *imgV = [[UIImageView alloc] initWithImage:img];
                 [self addSubview:imgV];
-                
+                imgV.frame = CGRectMake(imgWidth*counter , 0, imgWidth, imgHeight);
+                [imgV setContentMode:UIViewContentModeScaleAspectFill];
+                [imgV setClipsToBounds:YES];
             });
             
+            //            NSLog(@"Frame created  %d", counter);
+           
         }
     });
-    
-    
 }
 
 

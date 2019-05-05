@@ -18,6 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
     int oneframeTakeTime;
     bool flag ;
     int framePerSec;
+    AVAssetImageGenerator *imageGenerator ;
+    CMTime duration;
+    float totalTime ;
     
 }
 @property(weak,nonatomic) id <playerDisplayVCViewControllerDelegate> delegator ;

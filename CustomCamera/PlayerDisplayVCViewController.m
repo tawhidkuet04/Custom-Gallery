@@ -51,7 +51,7 @@
     options.networkAccessAllowed = YES;
     __block AVAsset *resultAsset;
     
-   
+    
     
     [[PHImageManager defaultManager] requestAVAssetForVideo:_passet options:options resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
         resultAsset = avasset;
@@ -118,7 +118,11 @@
             UIPanGestureRecognizer *endPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleEndPan:)];
             [self->endBound addGestureRecognizer:endPanGR];
             self->endBound.userInteractionEnabled = YES ;
-
+            
+            
+            UIPanGestureRecognizer *seekBarTouch = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSeekBarPan:)];
+            [self->seekBar addGestureRecognizer:seekBarTouch];
+            self->seekBar.userInteractionEnabled = YES;
             /////// play time show view initialization
               [_toast setCenter:CGPointMake( seekBar.frame.origin.x+15 ,_toast.center.y)];
             
@@ -154,10 +158,69 @@
     //   [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
   
 }
+
+-(void)handleSeekBarPan:(UIPanGestureRecognizer *)recognizer{
+    
+    //  NSLog(@"asdasdasdasd");
+    //   [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
+    
+    if(recognizer.state == UIGestureRecognizerStateBegan)
+    {
+        
+        _toast.text = @"";
+       // [seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
+        [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
+        
+        //All fingers are lifted.
+    }
+    UIView *pannedView = recognizer.view ;
+    CGPoint translation = [recognizer translationInView:pannedView.superview];
+    CGPoint point;
+    // NSLog(@"pan %f",pannedView.center.x + translation.x);
+    if(pannedView.center.x + translation.x > SCREEN_WIDTH-10){
+        point = CGPointMake(SCREEN_WIDTH-10, pannedView.center.y);
+    }else if(pannedView.center.x + translation.x < 10 ){
+        point = CGPointMake(10, pannedView.center.y);
+    }else {
+        point = CGPointMake(pannedView.center.x + translation.x , pannedView.center.y);
+    }
+    CGRect endBoundVal = endBound.frame;
+    if (point.x > endBoundVal.origin.x-10){
+        point.x = endBoundVal.origin.x-10;
+    }
+    pannedView.center = point;
+    NSLog(@"start touch %f seekbar %f ",point.x-10,seekBar.center.x-5);
+    [recognizer setTranslation:CGPointZero inView:pannedView.superview];
+  //  [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
+    if(recognizer.state == UIGestureRecognizerStateEnded)
+    {
+        
+        _toast.text = @"";
+       
+        [_toast setCenter:CGPointMake( seekBar.frame.origin.x+15 ,_toast.center.y)];
+        
+        //All fingers are lifted.
+    }
+    [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(point.x+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    
+}
+
+
+
 -(void)handleStartPan:(UIPanGestureRecognizer *)recognizer{
     
   //  NSLog(@"asdasdasdasd");
  //   [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
+    
+    if(recognizer.state == UIGestureRecognizerStateBegan)
+    {
+        
+        _toast.text = @"";
+        [seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
+        [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
+        
+        //All fingers are lifted.
+    }
     UIView *pannedView = recognizer.view ;
     CGPoint translation = [recognizer translationInView:pannedView.superview];
     CGPoint point;
@@ -179,8 +242,11 @@
       [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
     if(recognizer.state == UIGestureRecognizerStateEnded)
     {
+        
+         _toast.text = @"";
           [seekBar setCenter:CGPointMake(point.x+13,seekBar.center.y)];
           [_toast setCenter:CGPointMake( seekBar.frame.origin.x+15 ,_toast.center.y)];
+       
         //All fingers are lifted.
     }
     [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(point.x+10+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
@@ -190,6 +256,15 @@
 -(void)handleEndPan:(UIPanGestureRecognizer *)recognizer{
     
     //  NSLog(@"asdasdasdasd");
+    if(recognizer.state == UIGestureRecognizerStateBegan)
+    {
+        
+        _toast.text = @"";
+        [seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
+        [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
+        
+        //All fingers are lifted.
+    }
     UIView *pannedView = recognizer.view ;
     CGPoint translation = [recognizer translationInView:pannedView.superview];
     CGPoint point;
@@ -214,8 +289,10 @@
     [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(starBoundVal.origin.x+20+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
     if(recognizer.state == UIGestureRecognizerStateEnded)
     {
+         _toast.text = @"";
         [seekBar setCenter:CGPointMake(starBoundVal.origin.x+23,seekBar.center.y)];
         [_toast setCenter:CGPointMake(starBoundVal.origin.x+15 ,_toast.center.y)];
+      
     }
   
 }
@@ -301,7 +378,7 @@
     if(x>endBoundVal.origin.x-5+_scrollView.contentOffset.x){
           CGRect starBoundVal = startBound.frame;
           [self PlayerSetPlayPause:playPause withPlayingStatus:1];
-        
+         _toast.text = @"";
           [seekBar setCenter:CGPointMake( starBoundVal.origin.x+23  ,seekBar.center.y)];
             [_toast setCenter:CGPointMake( starBoundVal.origin.x+38,_toast.center.y)];
           [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(starBoundVal.origin.x+20+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
@@ -337,6 +414,7 @@
 - (IBAction)scrollSliderEnd:(id)sender {
     CGRect starBoundVal = startBound.frame;
     [seekBar setCenter:CGPointMake( starBoundVal.origin.x+23 ,seekBar.center.y)];
+     _toast.text = @"";
     [_toast setCenter:CGPointMake( seekBar.frame.origin.x+15 ,_toast.center.y)];
     [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(starBoundVal.origin.x+20+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 }
