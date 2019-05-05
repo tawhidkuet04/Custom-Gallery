@@ -166,7 +166,7 @@
     
     if(recognizer.state == UIGestureRecognizerStateBegan)
     {
-        
+         [self PlayerSetPlayPause:playPause withPlayingStatus:1];
         _toast.text = @"";
        // [seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
         [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
