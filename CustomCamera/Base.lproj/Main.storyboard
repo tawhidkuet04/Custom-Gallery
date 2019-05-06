@@ -289,6 +289,7 @@
                                         <subviews>
                                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Atr-7s-2w4" customClass="customSegmentUX">
                                                 <rect key="frame" x="63" y="2" width="288" height="29"/>
+                                                <color key="backgroundColor" red="0.16470588235294117" green="0.16470588235294117" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="Atr-7s-2w4" secondAttribute="height" multiplier="72:7" id="cFe-av-Jgg"/>
                                                 </constraints>
@@ -411,4 +412,5 @@
     <resources>
         <image name="play" width="52" height="52"/>
     </resources>
+    <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
 </document>

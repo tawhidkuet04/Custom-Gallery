@@ -20,12 +20,20 @@
 }
 -(void)setUP{
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                [UIFont boldSystemFontOfSize:12] , NSFontAttributeName,
+                                [UIFont boldSystemFontOfSize:14*([UIScreen mainScreen].bounds.size.width/414)] , NSFontAttributeName,
                                 [UIColor whiteColor], NSForegroundColorAttributeName,
                                 nil];
     [self setTitleTextAttributes:attributes forState:UIControlStateNormal];
     NSDictionary *highlightedAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     [self  setTitleTextAttributes:highlightedAttributes forState:UIControlStateSelected];
+    self.layer.cornerRadius = 2 ;
+    self.layer.borderColor = [UIColor colorWithRed:77.0f/255.0f
+                                             green:77.0f/255.0f
+                                              blue:77.0f/255.0f
+                                             alpha:1.0f].CGColor;
+    self.layer.borderWidth =1.3f;
+    //self.layer.masksToBounds = YES;
+    //self.clipsToBounds = true ;
     
 }
 /*

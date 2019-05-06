@@ -37,6 +37,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
+//    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:31.0f/255.0f
+//                                                                             green:31.0f/255.0f
+//                                                                              blue:31.0f/255.0f
+//                                                                             alpha:1.0f]];
     [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
     [[UIApplication sharedApplication] setStatusBarHidden:YES
                                             withAnimation:UIStatusBarAnimationFade];
