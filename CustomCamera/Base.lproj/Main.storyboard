@@ -9,6 +9,11 @@
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="sf-ui-display-medium-58646be638f96.otf">
+            <string>SFUIDisplay-Medium</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--Navigation Controller-->
         <scene sceneID="Uio-uS-Hdj">
@@ -309,20 +314,19 @@
                                             <constraint firstAttribute="width" secondItem="LPh-EZ-1NU" secondAttribute="height" multiplier="207:16" id="ySO-Vi-dLa"/>
                                         </constraints>
                                     </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TOTAL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vMG-eB-Gsz">
-                                        <rect key="frame" x="307" y="88.666666666666629" width="91" height="14"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="vMG-eB-Gsz" secondAttribute="height" multiplier="13:2" id="hgr-Ie-1tD"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                        <color key="textColor" red="0.35819172859191895" green="0.35848766565322876" blue="0.35823759436607361" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00:00" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O09-TB-eN0">
+                                        <rect key="frame" x="161.66666666666666" y="77.333333333333371" width="91" height="33.666666666666657"/>
+                                        <fontDescription key="fontDescription" name="SFUIDisplay-Medium" family="SF UI Display" pointSize="12"/>
+                                        <color key="textColor" red="0.33649608492851257" green="0.33650475740432739" blue="0.33650004863739014" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O09-TB-eN0">
-                                        <rect key="frame" x="94" y="85" width="83" height="14"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                        <color key="textColor" red="0.33649608492851257" green="0.33650475740432739" blue="0.33650004863739014" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TOTAL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="vMG-eB-Gsz">
+                                        <rect key="frame" x="307" y="77.333333333333371" width="91" height="33.666666666666657"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="vMG-eB-Gsz" secondAttribute="height" multiplier="19:7" id="bAt-v2-Y4x"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="SFUIDisplay-Medium" family="SF UI Display" pointSize="12"/>
+                                        <color key="textColor" red="0.35819172859191895" green="0.35848766565322876" blue="0.35823759436607361" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -330,23 +334,28 @@
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="ZJS-sT-CaK" firstAttribute="top" secondItem="DwX-J3-E2N" secondAttribute="bottom" id="1bE-eF-ald"/>
+                                    <constraint firstItem="O09-TB-eN0" firstAttribute="centerX" secondItem="510-aO-aLl" secondAttribute="centerX" id="3DC-kn-xSM"/>
                                     <constraint firstAttribute="trailing" secondItem="c1k-OY-eZX" secondAttribute="trailing" id="4pA-Os-2ls"/>
                                     <constraint firstAttribute="bottom" secondItem="c1k-OY-eZX" secondAttribute="bottom" id="4zo-Gc-eA2"/>
                                     <constraint firstAttribute="trailing" secondItem="ZJS-sT-CaK" secondAttribute="trailing" id="9Ly-F4-D3j"/>
                                     <constraint firstItem="DwX-J3-E2N" firstAttribute="leading" secondItem="510-aO-aLl" secondAttribute="leading" id="9rw-BZ-Ch0"/>
-                                    <constraint firstItem="DwX-J3-E2N" firstAttribute="top" secondItem="vMG-eB-Gsz" secondAttribute="bottom" constant="8.3300000000000001" id="C3p-m8-lOQ"/>
                                     <constraint firstItem="5As-rz-lXn" firstAttribute="leading" secondItem="510-aO-aLl" secondAttribute="leading" id="Dtz-da-M2N"/>
                                     <constraint firstAttribute="width" secondItem="510-aO-aLl" secondAttribute="height" multiplier="207:118" id="HOc-1G-6ap"/>
+                                    <constraint firstItem="O09-TB-eN0" firstAttribute="height" secondItem="vMG-eB-Gsz" secondAttribute="height" id="Jib-NP-3gX"/>
                                     <constraint firstItem="ZJS-sT-CaK" firstAttribute="leading" secondItem="510-aO-aLl" secondAttribute="leading" id="QQn-gR-b2z"/>
+                                    <constraint firstItem="vMG-eB-Gsz" firstAttribute="trailing" secondItem="MP6-03-F3w" secondAttribute="trailing" id="SjR-Qm-S99"/>
                                     <constraint firstAttribute="trailing" secondItem="DwX-J3-E2N" secondAttribute="trailing" id="TI7-II-had"/>
                                     <constraint firstItem="c1k-OY-eZX" firstAttribute="leading" secondItem="510-aO-aLl" secondAttribute="leading" id="TLj-PN-htF"/>
                                     <constraint firstAttribute="trailing" secondItem="LPh-EZ-1NU" secondAttribute="trailing" id="Tne-Hz-w12"/>
+                                    <constraint firstItem="DwX-J3-E2N" firstAttribute="top" secondItem="O09-TB-eN0" secondAttribute="bottom" id="Vgq-pq-BEj"/>
                                     <constraint firstItem="c1k-OY-eZX" firstAttribute="top" secondItem="ZJS-sT-CaK" secondAttribute="bottom" id="XUD-wd-HFK"/>
-                                    <constraint firstItem="vMG-eB-Gsz" firstAttribute="trailing" secondItem="MP6-03-F3w" secondAttribute="trailing" id="cB3-fV-VkB"/>
                                     <constraint firstItem="LPh-EZ-1NU" firstAttribute="top" secondItem="5As-rz-lXn" secondAttribute="bottom" id="eFy-Sz-pLZ"/>
                                     <constraint firstItem="LPh-EZ-1NU" firstAttribute="leading" secondItem="510-aO-aLl" secondAttribute="leading" id="jq2-Qq-8Eq"/>
                                     <constraint firstItem="5As-rz-lXn" firstAttribute="top" secondItem="510-aO-aLl" secondAttribute="top" id="l1W-lE-NWu"/>
                                     <constraint firstAttribute="trailing" secondItem="5As-rz-lXn" secondAttribute="trailing" id="mlw-kQ-DaU"/>
+                                    <constraint firstItem="DwX-J3-E2N" firstAttribute="top" secondItem="vMG-eB-Gsz" secondAttribute="bottom" id="rxu-54-MQu"/>
+                                    <constraint firstItem="vMG-eB-Gsz" firstAttribute="width" secondItem="510-aO-aLl" secondAttribute="width" multiplier="91/414" id="uPH-ud-ga2"/>
+                                    <constraint firstItem="O09-TB-eN0" firstAttribute="width" secondItem="vMG-eB-Gsz" secondAttribute="width" id="wt4-br-HgI"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xkv-Y9-hGh">

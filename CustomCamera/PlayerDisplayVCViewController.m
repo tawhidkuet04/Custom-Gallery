@@ -184,10 +184,7 @@
     }else {
         point = CGPointMake(pannedView.center.x + translation.x , pannedView.center.y);
     }
-    CGRect endBoundVal = endBound.frame;
-    if (point.x > endBoundVal.origin.x-10){
-        point.x = endBoundVal.origin.x-10;
-    }
+   
     pannedView.center = point;
     NSLog(@"start touch %f seekbar %f ",point.x-10,seekBar.center.x-5);
     [recognizer setTranslation:CGPointZero inView:pannedView.superview];
