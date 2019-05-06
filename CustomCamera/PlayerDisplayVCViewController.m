@@ -40,7 +40,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+   
     ///// navigatiob slide off
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     //NSLog(@"slide %f",sliderScroll.maximumValue);
@@ -294,6 +294,7 @@
   
 }
 - (void)viewWillAppear:(BOOL)animated{
+    ///[[self navigationController] setNavigationBarHidden:YES animated:YES];
     //    playerItem = [AVPlayerItem playerItemWithURL:_videoURL];
     //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:playerItem];
     //    player = [AVPlayer playerWithPlayerItem:playerItem];
@@ -418,6 +419,13 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     NSLog(@"touch hoise");
 }
+- (IBAction)crossButtonPress:(id)sender {
+    NSLog(@"cross button pressed");
+    [self PlayerSetPlayPause:playPause withPlayingStatus:1];
+    [[self navigationController] popViewControllerAnimated:YES];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
 @end
 
 
