@@ -32,10 +32,18 @@
                                               blue:77.0f/255.0f
                                              alpha:1.0f].CGColor;
     self.layer.borderWidth =1.3f;
-    //self.layer.masksToBounds = YES;
+//    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self
+//                                                                  attribute:NSLayoutAttributeHeight
+//                                                                  relatedBy:NSLayoutRelationEqual
+//                                                                     toItem:nil
+//                                                                  attribute:NSLayoutAttributeNotAnAttribute
+//                                                                 multiplier:1
+//                                                            constant:32*([UIScreen mainScreen].bounds.size.height/414)];
+//    [self addConstraint:constraint];    //self.layer.masksToBounds = YES;
     //self.clipsToBounds = true ;
     
 }
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

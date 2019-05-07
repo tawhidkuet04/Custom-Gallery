@@ -27,9 +27,10 @@
     
    // IBOutlet UIView *framGenerateView;
     ////// range bar start and end
-    UIImageView *startBound;
-    UIImageView *endBound;
+  
+    IBOutlet UIImageView *endBound;
     
+    IBOutlet UIImageView *startBound;
     ///////
     UIImage *timeShow;
 }
@@ -51,6 +52,8 @@
     options.networkAccessAllowed = YES;
     __block AVAsset *resultAsset;
     
+    
+ 
     
     
     [[PHImageManager defaultManager] requestAVAssetForVideo:_passet options:options resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
@@ -82,30 +85,26 @@
 //            [self.view addSubview:tempView];
             // seekbar initialiaztion
             //(void)(self->posX = 0) ,self->currentTime = 0 ;
-            self->seekBar = [[UIView alloc] initWithFrame:CGRectMake(30,-2,6, self->_frameGenerateView.frame.size
+            self->seekBar = [[UIView alloc] initWithFrame:CGRectMake(60,-2,6*([UIScreen mainScreen].bounds.size.width/414), self->_frameGenerateView.frame.size
                                                                      .height+4)];
             self->seekBar.backgroundColor = [UIColor whiteColor];
-            seekBar.layer.cornerRadius = 3;
+            self->seekBar.layer.cornerRadius = 3;
             //seekBar.layer.masksToBounds = true;
-            seekBar.layer.shadowColor = [UIColor blackColor].CGColor;
-            seekBar.layer.shadowOpacity = 100;
-            seekBar.layer.shadowRadius = 6;// blur effect
+            self->seekBar.layer.shadowColor = [UIColor blackColor].CGColor;
+            self->seekBar.layer.shadowOpacity = 100;
+            self->seekBar.layer.shadowRadius = 6;// blur effect
             //seekBar.layer.shadowPath = shadowPath.CGPath;
             
-            _frameGenerateView.layer.cornerRadius = 4 ;
-            _frameGenerateView.layer.masksToBounds = true ;
+            self->_frameGenerateView.layer.cornerRadius = 4 ;
+            self->_frameGenerateView.layer.masksToBounds = true ;
            
             //[tempView addSubview:slider];//
            [self.outsideOfFrameGenerateView addSubview:self->seekBar];
 
             ///// bound view drawing
-            self->startBound = [[UIImageView alloc] initWithFrame:CGRectMake(0,0,20, self->_frameGenerateView.frame.size
-                                                                             .height)] ;
-            self->startBound.image = [UIImage imageNamed:@"Group 640.png"];
+
             //self->startBound.backgroundColor = [ UIColor blueColor ];
-            self->endBound = [[UIImageView alloc] initWithFrame:CGRectMake(50,0,20, self->_frameGenerateView.frame.size
-                                                                           .height)];
-            self->endBound.image = [UIImage imageNamed:@"Group 639.png"];
+
             [self->_outsideOfFrameGenerateView addSubview:self->startBound];
             [self->_outsideOfFrameGenerateView addSubview:self->endBound];
             self->sliderScroll.maximumValue = self->_scrollView.contentSize.width;
@@ -124,18 +123,18 @@
             [self->seekBar addGestureRecognizer:seekBarTouch];
             self->seekBar.userInteractionEnabled = YES;
             /////// play time show view initialization
-              [_toast setCenter:CGPointMake( seekBar.frame.origin.x+15 ,_toast.center.y)];
+            //[self->_toast setCenter:CGPointMake( self->seekBar.frame.origin.x+15 ,self->_toast.center.y)];
             
            // [seekBar setCenter:CGPointMake(25,seekBar.center.y)];
             //[seekBar removeFromSuperview];
             self->playerItem = [AVPlayerItem playerItemWithAsset:self->asset];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:self->playerItem];
             self->player = [AVPlayer playerWithPlayerItem:self->playerItem];
-            [self->player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(20+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+            [self->player seekToTime:CMTimeMakeWithSeconds((self->videoTotalTime/(self->_scrollView.contentSize.width)), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
             //  player.frame = self.playerView.bounds;
             // __weak NSObject *weakSelf = self;
             
-            
+       //     [_toastStartBound setCenter:CGPointMake(-100,seekBar.center.y)];
             // _playerView.player = player;
             [self.playerView setOk:self->playerViewBound.bounds];
             [self.playerView setNeedsDisplay];
@@ -144,8 +143,11 @@
             dateComponentsFormatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
             dateComponentsFormatter.allowedUnits = (NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond);
             NSString *timeString = @" TOTAL" ;
-            _totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [dateComponentsFormatter stringFromTimeInterval:videoTotalTime] ];
-            
+            self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [dateComponentsFormatter stringFromTimeInterval:self->videoTotalTime] ];
+            timeNeededForExtraOutsideFrameGenerate = ((videoTotalTime/SCREEN_WIDTH)*(SCREEN_WIDTH-_frameGenerateView.frame.size.width))/2;
+            xPosForExtraTime = (_frameGenerateView.frame.size.width/videoTotalTime)*timeNeededForExtraOutsideFrameGenerate;
+            [_toastStartBound setCenter:CGPointMake(-1000,_toast.center.y)];
+            [_toastEndBound setCenter:CGPointMake(-1000,_toast.center.y)];
         });
         // dispatch_semaphore_signal(semaphore);
     }];
@@ -169,7 +171,7 @@
          [self PlayerSetPlayPause:playPause withPlayingStatus:1];
         _toast.text = @"";
        // [seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
-        [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
+        // [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
         
         //All fingers are lifted.
     }
@@ -177,14 +179,18 @@
     CGPoint translation = [recognizer translationInView:pannedView.superview];
     CGPoint point;
     // NSLog(@"pan %f",pannedView.center.x + translation.x);
-    if(pannedView.center.x + translation.x > SCREEN_WIDTH-10){
-        point = CGPointMake(SCREEN_WIDTH-10, pannedView.center.y);
-    }else if(pannedView.center.x + translation.x < 10 ){
-        point = CGPointMake(10, pannedView.center.y);
+    double extraSpace =(SCREEN_WIDTH-_frameGenerateView.frame.size.width)/2;
+    if(pannedView.center.x + translation.x > SCREEN_WIDTH-extraSpace-(seekBar.frame.size.width/2)){
+        point = CGPointMake(SCREEN_WIDTH-extraSpace-(seekBar.frame.size.width/2), pannedView.center.y);
+    }else if(pannedView.center.x + translation.x < (seekBar.frame.size.width/2) ){
+        point = CGPointMake((seekBar.frame.size.width/2), pannedView.center.y);
     }else {
         point = CGPointMake(pannedView.center.x + translation.x , pannedView.center.y);
     }
-   
+
+    if(point.x < extraSpace + seekBar.frame.size.width/2){
+        point.x=  extraSpace + seekBar.frame.size.width/2;
+    }
     pannedView.center = point;
     NSLog(@"start touch %f seekbar %f ",point.x-10,seekBar.center.x-5);
     [recognizer setTranslation:CGPointZero inView:pannedView.superview];
@@ -192,13 +198,13 @@
     if(recognizer.state == UIGestureRecognizerStateEnded)
     {
         
-        _toast.text = @"";
+       // _toast.text = @"";
        
-        [_toast setCenter:CGPointMake( seekBar.frame.origin.x+15 ,_toast.center.y)];
+       // [_toast setCenter:CGPointMake( seekBar.frame.origin.x ,_toast.center.y)];
         
         //All fingers are lifted.
     }
-    [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(point.x+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_frameGenerateView.frame.size.width))*(point.x-xPosForExtraTime), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
     
 }
 
@@ -211,10 +217,16 @@
     
     if(recognizer.state == UIGestureRecognizerStateBegan)
     {
+        if(player.rate){
+            [self PlayerSetPlayPause:playPause withPlayingStatus:1];
+        }
         
-        _toast.text = @"";
-        [seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
-        [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
+         NSLog(@"start");
+    //    _toast.text = @"";
+         [_toastStartBound setCenter:CGPointMake(startBound.frame.origin.x+startBound.frame.size.width/2,_toast.center.y)];
+         [_toastEndBound setCenter:CGPointMake(endBound.frame.origin.x+endBound.frame.size.width/2,_toast.center.y)];
+       // [seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
+      //  [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
         
         //All fingers are lifted.
     }
@@ -222,31 +234,56 @@
     CGPoint translation = [recognizer translationInView:pannedView.superview];
     CGPoint point;
    // NSLog(@"pan %f",pannedView.center.x + translation.x);
-    if(pannedView.center.x + translation.x > SCREEN_WIDTH-10){
-        point = CGPointMake(SCREEN_WIDTH-10, pannedView.center.y);
-    }else if(pannedView.center.x + translation.x < 10 ){
-        point = CGPointMake(10, pannedView.center.y);
+    if(pannedView.center.x + translation.x > SCREEN_WIDTH-(endBound.frame.size.width/2)){
+        point = CGPointMake(SCREEN_WIDTH-(endBound.frame.size.width/2), pannedView.center.y);
+    }else if(pannedView.center.x + translation.x < (endBound.frame.size.width/2) ){
+        point = CGPointMake((endBound.frame.size.width/2), pannedView.center.y);
     }else {
         point = CGPointMake(pannedView.center.x + translation.x , pannedView.center.y);
+       
     }
     CGRect endBoundVal = endBound.frame;
-    if (point.x > endBoundVal.origin.x-10){
-        point.x = endBoundVal.origin.x-10;
+    if (point.x > endBoundVal.origin.x-(seekBar.frame.size.width)-startBound.frame.size.width/2){
+        point.x = endBoundVal.origin.x-(seekBar.frame.size.width)-startBound.frame.size.width/2;
+    }
+    if(point.x < startBound.frame.size.width/2){
+        point.x=  startBound.frame.size.width/2;
     }
     pannedView.center = point;
     NSLog(@"start touch %f seekbar %f ",point.x-10,seekBar.center.x-5);
     [recognizer setTranslation:CGPointZero inView:pannedView.superview];
-      [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
+    NSDateComponentsFormatter *dateComponentsFormatter = [[NSDateComponentsFormatter alloc] init];
+    dateComponentsFormatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
+    dateComponentsFormatter.allowedUnits = (NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond);
+    _toastStartBound.text =[dateComponentsFormatter stringFromTimeInterval:(videoTotalTime/(_frameGenerateView.frame.size.width))*(point.x-xPosForExtraTime+startBound.frame.size.width/2.5)];
+    [_toastStartBound setCenter:CGPointMake(startBound.frame.origin.x+startBound.frame.size.width/2,_toast.center.y)];
+    
+    
+    dateComponentsFormatter = [[NSDateComponentsFormatter alloc] init];
+    dateComponentsFormatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
+    dateComponentsFormatter.allowedUnits = (NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond);
+    _toastEndBound.text =[dateComponentsFormatter stringFromTimeInterval:(videoTotalTime/(_frameGenerateView.frame.size.width))*(endBound.frame.origin.x+seekBar.frame.size.width/2.5-xPosForExtraTime)];
+    double endValue = endBound.frame.origin.x+endBound.frame.size.width/2 ;
+    if ( endValue > SCREEN_WIDTH - _toastEndBound.frame.size.width/2){
+        endValue = SCREEN_WIDTH - _toastEndBound.frame.size.width/2;
+    }
+    [_toastEndBound setCenter:CGPointMake(endValue,_toast.center.y)];
     if(recognizer.state == UIGestureRecognizerStateEnded)
     {
         
-         _toast.text = @"";
-          [seekBar setCenter:CGPointMake(point.x+13,seekBar.center.y)];
-          [_toast setCenter:CGPointMake( seekBar.frame.origin.x+15 ,_toast.center.y)];
+        if(!player.rate){
+            [self PlayerSetPlayPause:playPause withPlayingStatus:0];
+        }
+        
+        //  _toast.text = @"";
+          [_toastEndBound setCenter:CGPointMake(-1000,_toast.center.y)];
+          [_toastStartBound setCenter:CGPointMake(-1000,_toast.center.y)];
+      //    [seekBar setCenter:CGPointMake(point.x+ startBound.frame.size.width/2+ seekBar.frame.size.width/2,seekBar.center.y)];
+     //     [_toast setCenter:CGPointMake( point.x+ startBound.frame.size.width/2+ seekBar.frame.size.width/2 ,_toast.center.y)];
        
         //All fingers are lifted.
     }
-    [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(point.x+10+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_frameGenerateView.frame.size.width))*(point.x-xPosForExtraTime+startBound.frame.size.width/2.5), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
   
 }
 
@@ -255,10 +292,17 @@
     //  NSLog(@"asdasdasdasd");
     if(recognizer.state == UIGestureRecognizerStateBegan)
     {
+        if(player.rate){
+             [self PlayerSetPlayPause:playPause withPlayingStatus:1];
+        }
         
-        _toast.text = @"";
-        [seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
-        [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
+       
+        
+       //_toast.text = @"";
+        [_toastStartBound setCenter:CGPointMake(startBound.frame.origin.x+startBound.frame.size.width/2,_toast.center.y)];
+        [_toastEndBound setCenter:CGPointMake(endBound.frame.origin.x+endBound.frame.size.width/2,_toast.center.y)];
+        //[seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
+        //[_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
         
         //All fingers are lifted.
     }
@@ -266,31 +310,56 @@
     CGPoint translation = [recognizer translationInView:pannedView.superview];
     CGPoint point;
    // NSLog(@"pan %f",pannedView.center.x + translation.x);
-    if(pannedView.center.x + translation.x > SCREEN_WIDTH-10){
-        point = CGPointMake(SCREEN_WIDTH-10, pannedView.center.y);
-    }else if(pannedView.center.x + translation.x < 10 ){
-        point = CGPointMake(10, pannedView.center.y);
+    if(pannedView.center.x + translation.x > SCREEN_WIDTH-(endBound.frame.size.width/2)){
+        point = CGPointMake(SCREEN_WIDTH-(endBound.frame.size.width/2), pannedView.center.y);
+    }else if(pannedView.center.x + translation.x < (endBound.frame.size.width/2) ){
+        point = CGPointMake((endBound.frame.size.width/2), pannedView.center.y);
     }else {
         point = CGPointMake(pannedView.center.x + translation.x , pannedView.center.y);
     }
     CGRect starBoundVal = startBound.frame;
-    if (point.x < starBoundVal.origin.x+30){
-        point.x = starBoundVal.origin.x+30;
+    if (point.x < starBoundVal.origin.x+startBound.frame.size.width+ seekBar.frame.size.width+endBound.frame.size.width/2){
+        point.x = starBoundVal.origin.x+startBound.frame.size.width+ seekBar.frame.size.width+endBound.frame.size.width/2;
+    }
+    if(point.x > SCREEN_WIDTH- endBound.frame.size.width/2){
+        point.x=  SCREEN_WIDTH- endBound.frame.size.width/2;
     }
   
    // NSLog(@"start point %f end oint %f",starBoundVal.origin.x,point.x);
     pannedView.center = point;
     [recognizer setTranslation:CGPointZero inView:pannedView.superview];
-    [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
-  
-    [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(starBoundVal.origin.x+20+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+   
+    NSDateComponentsFormatter *dateComponentsFormatter = [[NSDateComponentsFormatter alloc] init];
+    dateComponentsFormatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
+    dateComponentsFormatter.allowedUnits = (NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond);
+    _toastStartBound.text =[dateComponentsFormatter stringFromTimeInterval:(videoTotalTime/(_frameGenerateView.frame.size.width))*(startBound.frame.origin.x+startBound.frame.size.width/2-xPosForExtraTime+startBound.frame.size.width/2.5)];
+    [_toastStartBound setCenter:CGPointMake(startBound.frame.origin.x+startBound.frame.size.width/2,_toast.center.y)];
+    
+    
+    dateComponentsFormatter = [[NSDateComponentsFormatter alloc] init];
+    dateComponentsFormatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
+    dateComponentsFormatter.allowedUnits = (NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond);
+    _toastEndBound.text =[dateComponentsFormatter stringFromTimeInterval:(videoTotalTime/(_frameGenerateView.frame.size.width))*(endBound.frame.origin.x+seekBar.frame.size.width/2.5-xPosForExtraTime)];
+    double endValue = endBound.frame.origin.x+endBound.frame.size.width/2 ;
+    if ( endValue > SCREEN_WIDTH - _toastEndBound.frame.size.width/2){
+        endValue = SCREEN_WIDTH - _toastEndBound.frame.size.width/2;
+    }
+    [_toastEndBound setCenter:CGPointMake(endValue,_toast.center.y)];
+   
     if(recognizer.state == UIGestureRecognizerStateEnded)
     {
-         _toast.text = @"";
-        [seekBar setCenter:CGPointMake(starBoundVal.origin.x+23,seekBar.center.y)];
-        [_toast setCenter:CGPointMake(starBoundVal.origin.x+15 ,_toast.center.y)];
+        if(!player.rate){
+            [self PlayerSetPlayPause:playPause withPlayingStatus:0];
+        }
+        
+        [_toastEndBound setCenter:CGPointMake(-1000,_toast.center.y)];
+        [_toastStartBound setCenter:CGPointMake(-1000,_toast.center.y)];
+        // _toast.text = @"";
+        //[seekBar setCenter:CGPointMake(startBound.frame.origin.x+ startBound.frame.size.width+ seekBar.frame.size.width/2,seekBar.center.y)];
+        //[_toast setCenter:CGPointMake(startBound.frame.origin.x+ startBound.frame.size.width+ seekBar.frame.size.width/2 ,_toast.center.y)];
       
     }
+    // [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_frameGenerateView.frame.size.width))*(startBound.frame.origin.x+startBound.frame.size.width/2-xPosForExtraTime+startBound.frame.size.width/2.5), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
   
 }
 - (void)viewWillAppear:(BOOL)animated{
@@ -357,32 +426,30 @@
 //                                              trackRect:trackRect
 //                                                  value:self->slider.value];
     //NSLog(@"x--- %f y--- %f",thumbRect.origin.x,thumbRect.origin.y);
-    
-    double x = ((_scrollView.contentSize.width)/videoTotalTime)* time;
-    
-    double timeNeededForScreenWidth = (videoTotalTime/_scrollView.contentSize.width)*SCREEN_WIDTH;
-    double timeNeededForOffset = (videoTotalTime/_scrollView.contentSize.width)*_scrollView.contentOffset.x;
-    double seekbarAtXPosition = (SCREEN_WIDTH/timeNeededForScreenWidth)*(time-timeNeededForOffset);
+
+    double x = ((_frameGenerateView.frame.size.width)/videoTotalTime)* time;
+    double seekbarAtXPosition = (_frameGenerateView.frame.size.width/videoTotalTime)*(time);
     //NSLog(@"x--- %f y--- %f",x,thumbRect.origin.y);
    // _scrollView.contentOffset= CGPointMake( x,thumbRect.origin.y + 2);
      //NSLog(@"start %f end %f x %f",st.origin.x-10,x);
-     [seekBar setCenter:CGPointMake( seekbarAtXPosition ,seekBar.center.y)];
-     [_toast setCenter:CGPointMake( seekbarAtXPosition+15 ,_toast.center.y)];
+    [seekBar setCenter:CGPointMake( seekbarAtXPosition+xPosForExtraTime  ,seekBar.center.y)];
+    // [_toast setCenter:CGPointMake( seekbarAtXPosition +xPosForExtraTime,_toast.center.y)];
     
     //  NSLog(@"cur %f",slider.value);
     //     NSLog(@"min %f max %f time %f dur %f",minValue,maxValue,time,duration);
      CGRect endBoundVal = endBound.frame;
 
-    if(x>endBoundVal.origin.x-5+_scrollView.contentOffset.x){
+    if(x+xPosForExtraTime >endBoundVal.origin.x-(seekBar.frame.size.width/2)){
           CGRect starBoundVal = startBound.frame;
-          [self PlayerSetPlayPause:playPause withPlayingStatus:1];
-         _toast.text = @"";
-          [seekBar setCenter:CGPointMake( starBoundVal.origin.x+23  ,seekBar.center.y)];
-            [_toast setCenter:CGPointMake( starBoundVal.origin.x+38,_toast.center.y)];
-          [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_scrollView.contentSize.width))*(starBoundVal.origin.x+20+_scrollView.contentOffset.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+          //[self PlayerSetPlayPause:playPause withPlayingStatus:1];
+     //    _toast.text = @"";
+          [seekBar setCenter:CGPointMake( starBoundVal.origin.x+(seekBar.frame.size.width/2)+ (starBoundVal.size.width) ,seekBar.center.y)];
+      //    [_toast setCenter:CGPointMake( seekbarAtXPosition +xPosForExtraTime,_toast.center.y)];
+          [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_frameGenerateView.frame.size.width))*(starBoundVal.origin.x+starBoundVal.size.width-xPosForExtraTime+seekBar.frame.size.width/2.5), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
         
     }
-
+ 
+   
     
     
 }

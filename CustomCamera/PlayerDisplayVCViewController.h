@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PlayerDisplayVCViewController : UIViewController{
     double videoTotalTime;
     bool playOrPause;
+    double timeNeededForExtraOutsideFrameGenerate , xPosForExtraTime ;
 }
 @property (strong, nonatomic) IBOutlet PlayerBC *playerView;
 @property (nonatomic, strong) NSURL *videoURL;
@@ -26,6 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UIView *outsideOfFrameGenerateView;
 @property (strong, nonatomic) IBOutlet UILabel *totalTimeShowLable;
 @property (strong, nonatomic) IBOutlet UILabel *toast;
+@property (strong, nonatomic) IBOutlet UILabel *toastStartBound;
+@property (strong, nonatomic) IBOutlet UILabel *toastEndBound;
+
 
 - (void)updateSlider;
 @end
