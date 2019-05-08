@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
     double videoTotalTime;
     bool playOrPause;
     double timeNeededForExtraOutsideFrameGenerate , xPosForExtraTime ;
+    NSMutableArray *captureAllSecondsArray;
+    int selectOption ; // 0 --> trim , 1 --> cut , 2 --> split
 }
 @property (strong, nonatomic) IBOutlet PlayerBC *playerView;
 @property (nonatomic, strong) NSURL *videoURL;
@@ -30,7 +32,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UILabel *toastStartBound;
 @property (strong, nonatomic) IBOutlet UILabel *toastEndBound;
 
+@property (strong, nonatomic) IBOutlet UIImageView *seekBar;
+@property (strong, nonatomic) IBOutlet UIView *cutView;
+@property (strong, nonatomic) IBOutlet UIView *splitViewStart;
+@property (strong, nonatomic) IBOutlet UIView *splitViewEnd;
+@property (strong, nonatomic) IBOutlet UIImageView *splitBar;
 
+
+- (NSString *)timeFormatted:(int)totalSeconds;
 - (void)updateSlider;
 @end
 
