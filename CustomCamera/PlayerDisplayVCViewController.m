@@ -416,14 +416,20 @@ NSURL * dataFilePath(NSString *path){
     AVMutableComposition *mutableComposition = [AVMutableComposition composition];
     AVMutableCompositionTrack *videoCompositionTrack = [mutableComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     AVAssetTrack *videoAssetTrack = [asset tracksWithMediaType:AVMediaTypeVideo].firstObject;
+    AVMutableCompositionTrack *audioCompositionTrack = [mutableComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    AVAssetTrack *audioAssetTrack = [asset tracksWithMediaType:AVMediaTypeAudio].firstObject;
     CMTime time = kCMTimeZero;
     NSError *videoError;
     [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration)
                                    ofTrack:videoAssetTrack
                                     atTime:time
                                      error:&videoError];
+    [audioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration)
+                                   ofTrack:audioAssetTrack
+                                    atTime:time
+                                     error:&videoError];
     [videoCompositionTrack removeTimeRange:range];
-    
+    [audioCompositionTrack removeTimeRange:range];
     if (videoError) {
         NSLog(@"Error - %@", videoError.debugDescription);
     }
@@ -740,12 +746,14 @@ NSURL * dataFilePath(NSString *path){
     int startTime = (videoTotalTime/(_frameGenerateView.frame.size.width))*(startBound.frame.origin.x+startBound.frame.size.width/2-xPosForExtraTime+startBound.frame.size.width/2.5) ;
     int endTime = (videoTotalTime/(_frameGenerateView.frame.size.width))*(endBound.frame.origin.x+_seekBar.frame.size.width/8-xPosForExtraTime);
     NSString *timeString = @" TOTAL" ;
-    self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [self timeFormatted:(int)(endTime-startTime)] ];
+  
     _toastStartBound.text = [self timeFormatted:startTime];
     _toastEndBound.text = [self timeFormatted:endTime];
     if(selectOption == 0 ){
+          self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [self timeFormatted:(int)(endTime-startTime)] ];
        _splitViewStart.frame =  CGRectMake(_frameGenerateView.frame.origin.x-startBound.frame.size.width,_cutView.frame.origin.y, startBound.frame.origin.x, _frameGenerateView.frame.size.height);
     }else if ( selectOption == 1 ){
+          self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [self timeFormatted:(int)(videoTotalTime- (endTime-startTime) ) ] ];
         _cutView.frame =  CGRectMake(startBound.frame.origin.x,_cutView.frame.origin.y, endBound.frame.origin.x-(startBound.frame.origin.x), _frameGenerateView.frame.size.height);
     }else {
         
@@ -845,14 +853,16 @@ NSURL * dataFilePath(NSString *path){
     int startTime = (videoTotalTime/(_frameGenerateView.frame.size.width))*(startBound.frame.origin.x+startBound.frame.size.width/2-xPosForExtraTime+startBound.frame.size.width/2.5) ;
     int endTime = (videoTotalTime/(_frameGenerateView.frame.size.width))*(endBound.frame.origin.x+_seekBar.frame.size.width/8-xPosForExtraTime);
     NSString *timeString = @" TOTAL" ;
-    self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [self timeFormatted:(int)(endTime-startTime)] ];
+ 
     _toastStartBound.text = [self timeFormatted:startTime];
     _toastEndBound.text = [self timeFormatted:endTime];
     if(selectOption == 0 ){
        // _splitViewStart.frame =  CGRectMake(_frameGenerateView.frame.origin.x,_cutView.frame.origin.y, startBound.frame.origin.x-_frameGenerateView.frame.origin.x, _frameGenerateView.frame.size.height);
+          self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [self timeFormatted:(int)(endTime-startTime)] ];
         _splitViewEnd.frame =  CGRectMake( endBound.frame.origin.x,_cutView.frame.origin.y, _frameGenerateView.frame.size.width - endBound.frame.origin.x
                                           , _frameGenerateView.frame.size.height);
     }else if ( selectOption == 1 ){
+          self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [self timeFormatted:(int)(videoTotalTime- (endTime-startTime) ) ] ];
         _cutView.frame =  CGRectMake(startBound.frame.origin.x,_cutView.frame.origin.y, endBound.frame.origin.x-(startBound.frame.origin.x), _frameGenerateView.frame.size.height);
     }else {
         
