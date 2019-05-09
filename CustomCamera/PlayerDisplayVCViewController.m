@@ -119,6 +119,12 @@
             self->endBound.userInteractionEnabled = YES ;
             
             
+            UIPanGestureRecognizer *splitBatPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSplitPan:)];
+            [self->_splitBar addGestureRecognizer:splitBatPan];
+            self->_splitBar.userInteractionEnabled = YES ;
+            
+            
+            
             UIPanGestureRecognizer *seekBarTouch = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSeekBarPan:)];
             [self->_seekBar addGestureRecognizer:seekBarTouch];
             self->_seekBar.userInteractionEnabled = YES;
@@ -228,6 +234,56 @@
     //   [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
   
 }
+-(void)handleSplitPan:(UIPanGestureRecognizer *)recognizer{
+    
+    //  NSLog(@"asdasdasdasd");
+    //   [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
+    
+    if(recognizer.state == UIGestureRecognizerStateBegan)
+    {
+        [self PlayerSetPlayPause:playPause withPlayingStatus:1];
+        _toast.text = @"";
+        // [seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
+        // [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
+        
+        //All fingers are lifted.
+    }
+    UIView *pannedView = recognizer.view ;
+    CGPoint translation = [recognizer translationInView:pannedView.superview];
+    CGPoint point;
+    // NSLog(@"pan %f",pannedView.center.x + translation.x);
+    double extraSpace =(SCREEN_WIDTH-_frameGenerateView.frame.size.width)/2;
+    if(pannedView.center.x + translation.x > SCREEN_WIDTH-extraSpace){
+        point = CGPointMake(SCREEN_WIDTH-extraSpace, pannedView.center.y);
+    }else if(pannedView.center.x + translation.x < (_splitBar.frame.size.width/2) ){
+        point = CGPointMake((_splitBar.frame.size.width/2), pannedView.center.y);
+    }else {
+        point = CGPointMake(pannedView.center.x + translation.x , pannedView.center.y);
+    }
+    
+    if(point.x < extraSpace ){
+        point.x=  extraSpace;
+    }
+    pannedView.center = point;
+    //   NSLog(@"start touch %f seekbar %f ",point.x-10,_seekBar.center.x-5);
+    [recognizer setTranslation:CGPointZero inView:pannedView.superview];
+    
+    //  [seekBar setCenter:CGPointMake(-1000,seekBar.center.y)];
+    
+    if(recognizer.state == UIGestureRecognizerStateEnded)
+    {
+        
+        // _toast.text = @"";
+        
+        
+        // [_toast setCenter:CGPointMake( seekBar.frame.origin.x ,_toast.center.y)];
+        
+        //All fingers are lifted.
+    }
+    [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_frameGenerateView.frame.size.width))*(point.x-xPosForExtraTime), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    
+}
+
 
 -(void)handleSeekBarPan:(UIPanGestureRecognizer *)recognizer{
     
