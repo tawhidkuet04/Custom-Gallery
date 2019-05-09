@@ -41,6 +41,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)timeFormatted:(int)totalSeconds;
 - (void)updateSlider;
+-(void)trimVideo;
+-(void)cropVideo;
 @end
 
 NS_ASSUME_NONNULL_END
