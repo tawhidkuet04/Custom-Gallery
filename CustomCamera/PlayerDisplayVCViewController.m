@@ -171,7 +171,8 @@
             startBound.image = [UIImage imageNamed:@"Group 639"];
             endBound.image = [UIImage imageNamed:@"Group 640"];
             _splitBar.layer.zPosition=-10;
-            
+            startBoundYpos = startBound.center.y;
+            endBoundYpos = endBound.center.y;
         });
         // dispatch_semaphore_signal(semaphore);
     }];
@@ -184,8 +185,8 @@
     if(s.selectedSegmentIndex == 0 ){
         //  NSLog(@"trim");;
         [_splitBar setCenter:CGPointMake(-1000, 0)];
-        [startBound setCenter:CGPointMake(3*startBound.frame.size.width, startBound.center.y)];
-        [endBound setCenter:CGPointMake(_frameGenerateView.frame.size.width-3*endBound.frame.size.width, endBound.center.y)];
+        [startBound setCenter:CGPointMake(startBound.frame.size.width, startBoundYpos)];
+        [endBound setCenter:CGPointMake(_frameGenerateView.frame.size.width-3*endBound.frame.size.width, endBoundYpos)];
         startBound.image = [UIImage imageNamed:@"Group 639"];
         endBound.image = [UIImage imageNamed:@"Group 640"];
          selectOption = 0;
@@ -207,8 +208,8 @@
     }else if(s.selectedSegmentIndex == 1 ){
      //  NSLog(@"cut");
         [_splitBar setCenter:CGPointMake(-1000, 0)];
-        [startBound setCenter:CGPointMake(3*startBound.frame.size.width, startBound.center.y)];
-        [endBound setCenter:CGPointMake(_frameGenerateView.frame.size.width-3*endBound.frame.size.width, endBound.center.y)];
+        [startBound setCenter:CGPointMake(startBound.frame.size.width, startBoundYpos)];
+        [endBound setCenter:CGPointMake(_frameGenerateView.frame.size.width-3*endBound.frame.size.width, endBoundYpos)];
         endBound.image = [UIImage imageNamed:@"Group 639"];
         startBound.image = [UIImage imageNamed:@"Group 640"];
         selectOption = 1 ;
@@ -222,12 +223,18 @@
     }else {
         selectOption = 2 ;
         [_splitBar setCenter:CGPointMake(_frameGenerateView.center.x, startBound.center.y)];
-        [startBound setCenter:CGPointMake(-1000, startBound.center.y)];
-        [endBound setCenter:CGPointMake(-1000, endBound.center.y)];
+        [startBound setCenter:CGPointMake(startBound.frame.size.width/2, -1000)];
+        [endBound setCenter:CGPointMake(_frameGenerateView.frame.size.width+xPosForExtraTime, -1000)];
         _splitViewStart.layer.zPosition = 0 ;
         _splitViewEnd.layer.zPosition = 0 ;
         _cutView.layer.zPosition = 0 ;
         _splitBar.layer.zPosition =  1;
+     //   _seekBar.layer.zPosition = 1 ;
+        
+        //[_seekBar setCenter:CGPointMake(30, _seekBar.center.y)];seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_frameGenerateView.frame.size.width))*(_frameGenerateView.frame.origin.x), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+
+       // [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/_frameGenerateView.frame.size.width)*(20-xPosForExtraTime), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+        
         NSLog(@"Split");
     }
 }
@@ -262,9 +269,302 @@ NSURL * dataFilePath(NSString *path){
     }else if ( selectOption == 1 ){
         [self cropVideo];
     }else {
-        
-        
+        [self splitVideo];
     }
+    
+}
+- (void)splitVideo{
+    
+    
+    int splitTime = (videoTotalTime/(_frameGenerateView.frame.size.width))*(_splitBar.center.x-xPosForExtraTime);
+    //create exportSession and exportVideo Quality
+    
+    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetHighestQuality];
+    
+    NSURL *outputVideoURL=dataFilePath(@"tmpPost.mp4"); //url of exportedVideo
+    
+    exportSession.outputURL = outputVideoURL;
+    
+    exportSession.shouldOptimizeForNetworkUse = YES;
+    
+    exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+    
+    AVAssetExportSession *exportSession2 = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetHighestQuality];
+    
+    NSURL *outputVideoURL2 =dataFilePath(@"tmpPost2.mp4"); //url of exportedVideo
+    
+    exportSession2.outputURL = outputVideoURL2;
+    
+    exportSession2.shouldOptimizeForNetworkUse = YES;
+    
+    exportSession2.outputFileType = AVFileTypeQuickTimeMovie;
+    /**
+     
+     
+     
+     creating the time range i.e. make startTime and endTime.
+     
+     startTime should be the first frame time at which your exportedVideo should start.
+     
+     endTime is the time of last frame at which your exportedVideo should stop. OR it should be the duration of the         excpected exportedVideo length
+     
+     **/
+    CMTime start = CMTimeMakeWithSeconds(0, 600);
+    CMTime split = CMTimeMakeWithSeconds(splitTime, 600);
+    CMTime end = CMTimeMakeWithSeconds(videoTotalTime-splitTime, 600);
+    
+    CMTimeRange range1= CMTimeRangeMake(start,split);
+    CMTimeRange range2= CMTimeRangeMake(split,end);
+    
+    exportSession.timeRange = range1;
+    exportSession2.timeRange = range2 ;
+    dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    __block i = 0 , j = 0 ;
+    dispatch_sync(aQueue,^{
+        //NSLog(@"%s",dispatch_queue_get_label(aQueue));
+      //  NSLog(@"This is the global Dispatch Queue");
+        [exportSession exportAsynchronouslyWithCompletionHandler:^(void){
+            
+            switch (exportSession.status)
+            
+            {
+                    
+                case
+                AVAssetExportSessionStatusCompleted:
+                    
+                {
+                    
+                    
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        NSURL *finalUrl=dataFilePath(@"trimmedVideo.mp4");
+                        
+                        NSData *urlData = [NSData dataWithContentsOfURL:outputVideoURL];
+                        
+                        NSError *writeError;
+                        
+                        //write exportedVideo to path/trimmedVideo.mp4
+                        
+                        [urlData writeToURL:finalUrl options:NSAtomicWrite error:&writeError];
+                        
+                        if (!writeError) {
+                            
+                            //update Original URL
+                            
+                            // originalURL=finalUrl;
+                            NSLog(@"saving");
+                            dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+                            dispatch_async(q, ^{
+                                
+                                NSData *videoData = [NSData dataWithContentsOfURL:finalUrl];
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    
+                                    // Write it to cache directory
+                                    NSString *videoPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"file.mov"];
+                                    [videoData writeToFile:videoPath atomically:YES];
+                                    
+                                    // After that use this path to save it to PhotoLibrary
+                                    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+                                    [library writeVideoAtPathToSavedPhotosAlbum:[NSURL fileURLWithPath:videoPath] completionBlock:^(NSURL *assetURL, NSError *error)
+                                     {
+                                         if (error)
+                                         {
+                                             NSLog(@"Error");
+                                         }
+                                         else
+                                         {
+                                             NSLog(@"F");
+                                             
+                                             if ( i == 2 && j== 0 ){
+                                                 j = 1 ;
+                                                 NSString *message = @"Video split Done";
+                                                 UIAlertView *toast = [[UIAlertView alloc] initWithTitle:nil
+                                                                                                 message:message
+                                                                                                delegate:nil
+                                                                                       cancelButtonTitle:nil
+                                                                                       otherButtonTitles:nil, nil];
+                                                 [toast show];
+                                                 
+                                                 int duration = 1; // duration in seconds
+                                                 
+                                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, duration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                                                     [toast dismissWithClickedButtonIndex:0 animated:YES];
+                                                 });
+                                                 NSLog(@"Success");
+                                             }
+                                             i = 1 ;
+                                          }
+                                         
+                                     }];
+                                });
+                            });
+                            
+                            //update video Properties
+                            
+                            // [self updateParameters];
+                            
+                        }
+                        
+                        NSLog(@"split Done %ld %@", (long)exportSession.status, exportSession.error);
+                        
+                    });
+                    
+                    
+                }
+                    
+                    break;
+                    
+                case AVAssetExportSessionStatusFailed:
+                    
+                    NSLog(@"split failed with error ===>>> %@",exportSession.error);
+                    
+                    break;
+                    
+                case AVAssetExportSessionStatusCancelled:
+                    
+                    NSLog(@"Canceled:%@",exportSession.error);
+                    
+                    break;
+                    
+                default:
+                    
+                    break;
+                    
+            }
+            
+        }];
+        
+    });
+    
+    dispatch_sync(aQueue,^{
+//        NSLog(@"%s",dispatch_queue_get_label(aQueue));
+//        for (int i =0; i<5;i++)
+//        {
+//            NSLog(@"i %d",i);
+//            sleep(1);
+//        }
+        
+        [exportSession2 exportAsynchronouslyWithCompletionHandler:^(void){
+            
+            switch (exportSession2.status)
+            
+            {
+                    
+                case
+                AVAssetExportSessionStatusCompleted:
+                    
+                {
+                    
+                    
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        NSURL *finalUrl=dataFilePath(@"trimmedVideo2.mp4");
+                        
+                        NSData *urlData = [NSData dataWithContentsOfURL:outputVideoURL2];
+                        
+                        NSError *writeError;
+                        
+                        //write exportedVideo to path/trimmedVideo.mp4
+                        
+                        [urlData writeToURL:finalUrl options:NSAtomicWrite error:&writeError];
+                        
+                        if (!writeError) {
+                            
+                            //update Original URL
+                            
+                            // originalURL=finalUrl;
+                            NSLog(@"saving");
+                            dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+                            dispatch_async(q, ^{
+                                
+                                NSData *videoData = [NSData dataWithContentsOfURL:finalUrl];
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    
+                                    // Write it to cache directory
+                                    NSString *videoPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"file.mov"];
+                                    [videoData writeToFile:videoPath atomically:YES];
+                                    
+                                    // After that use this path to save it to PhotoLibrary
+                                    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+                                    [library writeVideoAtPathToSavedPhotosAlbum:[NSURL fileURLWithPath:videoPath] completionBlock:^(NSURL *assetURL, NSError *error)
+                                     {
+                                         if (error)
+                                         {
+                                             NSLog(@"Error");
+                                         }
+                                         else
+                                         {
+                                             NSLog(@"S");
+                                             
+                                             if ( i == 1 && j == 0  ){
+                                                 j = 1 ;
+                                                 NSString *message = @"Video split Done";
+                                                 UIAlertView *toast = [[UIAlertView alloc] initWithTitle:nil
+                                                                                                 message:message
+                                                                                                delegate:nil
+                                                                                       cancelButtonTitle:nil
+                                                                                       otherButtonTitles:nil, nil];
+                                                 [toast show];
+                                                 
+                                                 int duration = 1; // duration in seconds
+                                                 
+                                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, duration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                                                     [toast dismissWithClickedButtonIndex:0 animated:YES];
+                                                 });
+                                                 NSLog(@"Success");
+                                             }
+                                             i = 2 ;
+                                            
+                                         }
+                                         
+                                     }];
+                                });
+                            });
+                            
+                            //update video Properties
+                            
+                            // [self updateParameters];
+                            
+                        }
+                        
+                        NSLog(@"Trim Done %ld %@", (long)exportSession.status, exportSession.error);
+                        
+                    });
+                    
+                    
+                }
+                    
+                    break;
+                    
+                case AVAssetExportSessionStatusFailed:
+                    
+                    NSLog(@"split failed with error ===>>> %@",exportSession.error);
+                    
+                    break;
+                    
+                case AVAssetExportSessionStatusCancelled:
+                    
+                    NSLog(@"Canceled:%@",exportSession.error);
+                    
+                    break;
+                    
+                default:
+                    
+                    break;
+                    
+            }
+            
+        }];
+    });
+    
+ 
+
+
+    
     
 }
 -(void)trimVideo{
@@ -616,6 +916,7 @@ NSURL * dataFilePath(NSString *path){
         
         //All fingers are lifted.
     }
+     _toast.text =[self timeFormatted:(videoTotalTime/(_frameGenerateView.frame.size.width))*(point.x-xPosForExtraTime)];
     [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_frameGenerateView.frame.size.width))*(point.x-xPosForExtraTime), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
     
 }
@@ -629,7 +930,7 @@ NSURL * dataFilePath(NSString *path){
     if(recognizer.state == UIGestureRecognizerStateBegan)
     {
          [self PlayerSetPlayPause:playPause withPlayingStatus:1];
-        _toast.text = @"";
+     //   _toast.text = @"";
        // [seekBar setCenter:CGPointMake(-100,seekBar.center.y)];
         // [_toast setCenter:CGPointMake(-100 ,_toast.center.y)];
         
@@ -651,6 +952,7 @@ NSURL * dataFilePath(NSString *path){
     if(point.x < extraSpace ){
         point.x=  extraSpace;
     }
+
     pannedView.center = point;
  //   NSLog(@"start touch %f seekbar %f ",point.x-10,_seekBar.center.x-5);
     [recognizer setTranslation:CGPointZero inView:pannedView.superview];
@@ -667,6 +969,8 @@ NSURL * dataFilePath(NSString *path){
         
         //All fingers are lifted.
     }
+    NSLog(@"seekbar time %f",(videoTotalTime/(_frameGenerateView.frame.size.width))*(point.x-xPosForExtraTime));
+    _toast.text =[self timeFormatted:(videoTotalTime/(_frameGenerateView.frame.size.width))*(point.x-xPosForExtraTime)];
     [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_frameGenerateView.frame.size.width))*(point.x-xPosForExtraTime), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
     
 }
@@ -776,6 +1080,9 @@ NSURL * dataFilePath(NSString *path){
      //     [_toast setCenter:CGPointMake( point.x+ startBound.frame.size.width/2+ seekBar.frame.size.width/2 ,_toast.center.y)];
        
         //All fingers are lifted.
+    }
+    if(!player.rate){
+        [self PlayerSetPlayPause:playPause withPlayingStatus:0];
     }
     [player seekToTime:CMTimeMakeWithSeconds((videoTotalTime/(_frameGenerateView.frame.size.width))*(point.x-xPosForExtraTime+startBound.frame.size.width/2.5), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
   

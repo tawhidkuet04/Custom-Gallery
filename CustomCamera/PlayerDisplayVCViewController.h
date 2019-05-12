@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
     bool playOrPause;
     double timeNeededForExtraOutsideFrameGenerate , xPosForExtraTime ;
     NSMutableArray *captureAllSecondsArray;
+    double startBoundYpos ,endBoundYpos;
     int selectOption ; // 0 --> trim , 1 --> cut , 2 --> split
 }
 @property (strong, nonatomic) IBOutlet PlayerBC *playerView;
@@ -43,6 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updateSlider;
 -(void)trimVideo;
 -(void)cropVideo;
+-(void)splitVideo;
 @end
 
 NS_ASSUME_NONNULL_END
