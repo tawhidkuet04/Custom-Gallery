@@ -504,7 +504,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" red="1" green="0.49019607840000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="mLB-tF-fHd" firstAttribute="width" secondItem="UAT-Fo-uwf" secondAttribute="width" multiplier="52/414" id="CaS-c5-Y9O"/>
                                     <constraint firstItem="mLB-tF-fHd" firstAttribute="centerX" secondItem="UAT-Fo-uwf" secondAttribute="centerX" id="Qmu-2G-kbU"/>
@@ -558,6 +558,7 @@
                         <outlet property="toastEndBound" destination="2YC-bl-9w6" id="3xB-kX-zYe"/>
                         <outlet property="toastStartBound" destination="y1c-p1-2T7" id="wJ9-M7-DCm"/>
                         <outlet property="totalTimeShowLable" destination="vMG-eB-Gsz" id="OKG-qK-Ntj"/>
+                        <outlet property="viewPlayer" destination="UAT-Fo-uwf" id="YQe-SJ-M3d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="K2Q-4H-aBr" userLabel="First Responder" sceneMemberID="firstResponder"/>

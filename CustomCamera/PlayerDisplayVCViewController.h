@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) NSTimer *timer;
 @property (strong , nonatomic ) thumbnailScrollView *scrollView;
 @property( strong , nonatomic ) PHAsset *passet;
+@property( strong , nonatomic ) PHAsset *qasset;
 @property (strong, nonatomic) IBOutlet UIView *frameGenerateView;
 
 @property (strong, nonatomic) IBOutlet UIView *outsideOfFrameGenerateView;
@@ -32,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UILabel *toast;
 @property (strong, nonatomic) IBOutlet UILabel *toastStartBound;
 @property (strong, nonatomic) IBOutlet UILabel *toastEndBound;
+@property (strong, nonatomic) IBOutlet PlayerBC *viewPlayer;
 
 @property (strong, nonatomic) IBOutlet UIImageView *seekBar;
 @property (strong, nonatomic) IBOutlet UIView *cutView;

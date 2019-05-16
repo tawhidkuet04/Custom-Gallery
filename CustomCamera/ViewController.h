@@ -7,10 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import <Photos/Photos.h>
 @interface ViewController : UIViewController{
     bool flag ; // false means image otherwise video
+    PHAsset *tmp;
+    int counter ;
+    bool p ;
+  
 }
+
 
 
 @end

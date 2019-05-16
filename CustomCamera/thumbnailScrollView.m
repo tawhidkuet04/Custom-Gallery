@@ -25,7 +25,7 @@
     duration = asset.duration;
     flag = false ;
     totalTime = CMTimeGetSeconds(duration);
-    //NSLog(@"total time here %f %f",totalTime,ceil(totalTime*(3))*100);
+    NSLog(@"total time here %f %f",totalTime,ceil(totalTime*(3))*100);
     NSLog(@"hhhh %f %f",frameGenerateView.frame.size.height,frameGenerateView.frame.size.width);
     totalFrame = frameGenerateView.frame.size.width/frameGenerateView.frame.size.height;
     oneframeTakeTime = totalTime/totalFrame;
@@ -167,6 +167,8 @@
             UIImage *img = [self getImageFromAsset:movieAsset atTime:CMTimeMakeWithSeconds(timeStart , 600)];
             
             timeStart += timePerFrameInThatBound;
+            
+            NSLog(@"time stat %f",timeStart);
            
             dispatch_sync(dispatch_get_main_queue(), ^{
                 

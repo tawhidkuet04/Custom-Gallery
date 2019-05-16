@@ -126,11 +126,32 @@
     return cell;
 }
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+//    if ( counter == 1 && flag ){
+//
+//        PlayerDisplayVCViewController *playerViewController = (PlayerDisplayVCViewController*)[self.storyboard instantiateViewControllerWithIdentifier:@"PlayerDisplayVCViewController"];
+//        playerViewController.passet =self.VideoAssets[indexPath.row];
+//        playerViewController.qasset = tmp;
+//        counter = 0 ;
+//        [self.navigationController pushViewController:playerViewController animated:YES];
+//        p = true ;
+//    }
+//    if ( counter==  0  && !p){
+//        counter ++ ;
+//        tmp = self.VideoAssets[indexPath.row];
+//        p = false ;
+//    }
+//    p = false ;
+    
+    
+    
+    
     if(flag){
-        
         PlayerDisplayVCViewController *playerViewController = (PlayerDisplayVCViewController*)[self.storyboard instantiateViewControllerWithIdentifier:@"PlayerDisplayVCViewController"];
-        playerViewController.passet =self.VideoAssets[indexPath.row];;
+        playerViewController.passet =self.VideoAssets[indexPath.row];
+        playerViewController.qasset = playerViewController.passet;
+        counter = 0 ;
         [self.navigationController pushViewController:playerViewController animated:YES];
+       
     }else {
         imageShowViewController *imageShowController = [[imageShowViewController alloc] init];
         imageShowController.asset =self.assets[indexPath.row];
