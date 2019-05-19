@@ -23,7 +23,10 @@
     AVAsset *audioAsset;
     AVAsset *asset;
     AVAsset *asset2;
+    NSURL *blurUrl;
+    AVAsset *blurAsset;
     id observer;
+    
     IBOutlet UIView *playerViewBound;
     IBOutlet UISlider *sliderScroll;
     
@@ -59,241 +62,285 @@
     options.deliveryMode = PHVideoRequestOptionsDeliveryModeAutomatic;
     options.networkAccessAllowed = YES;
     __block AVAsset *resultAsset;
+    dispatch_queue_t serialQ = dispatch_queue_create("serialQ", DISPATCH_QUEUE_SERIAL);
+    dispatch_async(serialQ, ^
+    {
+        [self applyBlurOnAsset:videoAssetHorseRide Completion:^(BOOL success, NSError *error, NSURL *videoUrl) {
+            if(success){
+                 blurAsset =  [[AVURLAsset alloc]initWithURL:videoUrl options:nil];
+                NSLog(@"DURATTTTT %f",CMTimeGetSeconds(blurAsset.duration));
+                NSLog(@"got");
+                
+                [[PHImageManager defaultManager] requestAVAssetForVideo:_passet options:options resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self->asset = avasset;
+                        
+                        NSLog(@"DURATTTTT %f",CMTimeGetSeconds(blurAsset.duration));
+                        
+                        
+                        
+                        AVMutableComposition *mainComposition = [[AVMutableComposition alloc] init];
+                        
+                        
+                        AVMutableComposition *tempComposition = [[AVMutableComposition alloc] init];
+                        
+                        AVMutableCompositionTrack *compositionVideoTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+                        AVMutableCompositionTrack *compositionAudioTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+                        
+                        AVMutableCompositionTrack *tempTrack = [tempComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+                        NSError *audioError;
+                        NSError *videoError;
+                        CMTime insertTime=kCMTimeZero;
+                        
+                        AVAssetTrack *videoTrack = [ avasset tracksWithMediaType:AVMediaTypeVideo].firstObject;
+                        AVAssetTrack *audioTrack = [avasset tracksWithMediaType:AVMediaTypeAudio].firstObject;
+                        [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: videoTrack atTime:insertTime error:&videoError];
+                        [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: audioTrack atTime:insertTime error:&audioError];
+                        insertTime = avasset.duration;
+                        double t = CMTimeGetSeconds(avasset.duration);
+                        CMTime p = CMTimeMakeWithSeconds(t-2, NSEC_PER_SEC);
+                        AVAssetTrack *trackB =[ videoAssetHorseRide tracksWithMediaType:AVMediaTypeVideo].firstObject;
+                        AVAssetTrack *trackBaudio = [videoAssetHorseRide tracksWithMediaType:AVMediaTypeAudio].firstObject;
+                        
+                        AVMutableCompositionTrack *testTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+                        AVMutableCompositionTrack *testTrackAudio = [mainComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+                        
+                        [testTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetHorseRide.duration) ofTrack: trackB atTime:p error:&videoError];
+                        [testTrackAudio insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetHorseRide.duration) ofTrack: trackBaudio atTime:p error:&audioError];
+                        
+                        
+                        AVAssetTrack *blurVideo =[ blurAsset tracksWithMediaType:AVMediaTypeVideo].firstObject;
+                        AVAssetTrack *blurAudio = [blurAsset tracksWithMediaType:AVMediaTypeAudio].firstObject;
+                        
+                        AVMutableCompositionTrack *blurTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+                        AVMutableCompositionTrack *blurTrackAudio = [mainComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+                        
+                        [blurTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, blurAsset.duration) ofTrack: blurVideo atTime:asset.duration error:&videoError];
+                        [blurTrackAudio insertTimeRange:CMTimeRangeMake(kCMTimeZero, blurAsset.duration) ofTrack: blurAudio atTime:asset.duration error:&audioError];
+                        
+                        
+                        if (videoError) {
+                            NSLog(@"Error - %@", videoError.debugDescription);
+                        }
+                        if (audioError) {
+                            NSLog(@"Error - %@", audioError.debugDescription);
+                        }
+                        // insertTime=CMTimeMakeWithSeconds(CMTimeGetSeconds(insertTime), NSEC_PER_SEC);
+                        
+                        [tempTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: videoTrack atTime:kCMTimeZero error:&videoError];
+                        [tempTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: trackB atTime:asset.duration error:&videoError];
+                        
+                        insertTime = avasset.duration;
+                        AVMutableVideoCompositionLayerInstruction *insB = [ AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack: testTrack];
+                        
+                        AVMutableVideoCompositionLayerInstruction *ins = [ AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack: compositionVideoTrack];
+                        AVMutableVideoCompositionLayerInstruction *insC = [ AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack: testTrack];
+                        AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+                        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, mainComposition.duration);
+                        AVMutableVideoCompositionLayerInstruction *insBlur = [ AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack: blurTrack];
+                        
+                        CGSize videoSizeB = CGSizeApplyAffineTransform(trackB.naturalSize,trackB.preferredTransform);
+                        CGSize videoSize = CGSizeApplyAffineTransform(videoTrack.naturalSize,videoTrack.preferredTransform);
+                        CGSize originalSize = CGSizeMake( _viewPlayer.frame.size.width *1.5 ,  _viewPlayer.frame.size.height*1.5);
+                        videoSize = CGSizeMake(fabs(videoSize.width), fabs(videoSize.height));
+                        videoSizeB = CGSizeMake(fabs(videoSizeB.width), fabs(videoSizeB.height));
+                        
+                        AVMutableVideoComposition *videoComp = [ AVMutableVideoComposition videoComposition];
+                        videoComp.renderSize = originalSize;
+                        videoComp.frameDuration = CMTimeMake(1, 30);
+                        //videoComp.videoComposition = composition;
+                        //            [ins setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(kCMTimeZero , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        //            [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(0, 0,0 ,0)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width,videoSize.height) timeRange:CMTimeRangeMake(kCMTimeZero , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        //             CMTime po = CMTimeMakeWithSeconds(4, NSEC_PER_SEC);
+                        //             [ins setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(po , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        //            [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(videoSize.width/2,  videoSize.height/2 ,0 ,0)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width,videoSize.height) timeRange:CMTimeRangeMake(po , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        //            p = CMTimeMakeWithSeconds(8, NSEC_PER_SEC);
+                        //             [ins setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        //            [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(0,  0 ,0 ,videoSize.height)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width/2,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        //            [insC setCropRectangleRampFromStartCropRectangle:CGRectMake(videoSize.width,  0 ,0 ,videoSize.height)   toEndCropRectangle:CGRectMake(videoSize.width/2, 0,videoSize.width/2,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        //            p = CMTimeMakeWithSeconds(12, NSEC_PER_SEC);
+                        //             [ins setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        //            [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(videoSize.width,  0 ,0 ,videoSize.height)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        
+                        [ins setOpacityRampFromStartOpacity:1 toEndOpacity:0 timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        // [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(0,  0 ,0 ,videoSize.height)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width/2,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        //p = CMTimeMakeWithSeconds(12, NSEC_PER_SEC);
+                        [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(0,  0 ,0 ,videoSize.height)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width/2,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(videoSizeB.width,  0 ,0 ,videoSize.height)   toEndCropRectangle:CGRectMake(0, 0,videoSize.width/2,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        
+                        [insC setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        [insC setCropRectangleRampFromStartCropRectangle:CGRectMake(0,  0 ,0 ,videoSizeB.height)  toEndCropRectangle:CGRectMake(0, 0,videoSizeB.width/2,videoSizeB.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        [insB setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        
+                        [insB setCropRectangleRampFromStartCropRectangle:CGRectMake(videoSizeB.width,  0 ,0 ,videoSizeB.height)   toEndCropRectangle:CGRectMake(0, 0,videoSizeB.width,videoSizeB.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
+                        // [ins setOpacity:0 atTime:asset.duration];
+                        
+                        CGAffineTransform origTrans = videoTrack.preferredTransform ;
+                        if(videoSize.width>videoSize.height){
+                            CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.width/videoSize.width), fabs(originalSize.width/videoSize.width));
+                            origTrans = CGAffineTransformConcat(origTrans, scale);
+                            double height = fabs(originalSize.width/videoSize.width)*videoSize.height;
+                            CGAffineTransform translate = CGAffineTransformMakeTranslation(0, (originalSize.height-height)/2);
+                            origTrans=  CGAffineTransformConcat(origTrans,translate) ;
+                        }else {
+                            CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.height), fabs(originalSize.height/videoSize.height));
+                            origTrans = CGAffineTransformConcat(origTrans, scale);
+                            double width = fabs(originalSize.height/videoSize.height)*videoSize.width;
+                            CGAffineTransform translate = CGAffineTransformMakeTranslation((originalSize.width-width)/2, 0);
+                            origTrans=  CGAffineTransformConcat(origTrans,translate) ;
+                        }
+                        
+                        
+                        
+                        
+                        
+                        
+                        // [ins setCropRectangle:CGRectMake(0, 0,videoSizeB.width-100,videoSizeB.height) atTime:avasset.duration];
+                        
+                        
+                        CGAffineTransform origTran = trackB.preferredTransform ;
+                        if(videoSizeB.width>videoSizeB.height){
+                            CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.width/videoSizeB.width), fabs(originalSize.width/videoSizeB.width));
+                            origTran = CGAffineTransformConcat(origTran, scale);
+                            double height = fabs(originalSize.width/videoSizeB.width)*videoSizeB.height;
+                            CGAffineTransform translate = CGAffineTransformMakeTranslation(0, (originalSize.height-height)/2);
+                            origTran=  CGAffineTransformConcat(origTran,translate) ;
+                        }else {
+                            CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSizeB.height), fabs(originalSize.height/videoSizeB.height));
+                            origTran = CGAffineTransformConcat(origTran, scale);
+                            double width = fabs(originalSize.height/videoSizeB.height)*videoSizeB.width;
+                            CGAffineTransform translate = CGAffineTransformMakeTranslation((originalSize.width-width)/2, 0);
+                            origTran =  CGAffineTransformConcat(origTran,translate) ;
+                        }
+                        
+                        // CGSizeMake([UIScreen mainScreen].bounds.size.width * [[UIScreen mainScreen] scale] , [UIScreen mainScreen].bounds.size.height * [[UIScreen mainScreen] scale] );
+                        double tt = CMTimeGetSeconds(asset.duration);
+                        CMTime pp = CMTimeMakeWithSeconds(tt-2, NSEC_PER_SEC);
+                        
+                        [ins setTransform:origTrans atTime:kCMTimeZero];
+                        [insB  setTransform:origTran atTime:pp];
+                        [insC setTransform:origTran atTime:pp];
+                    
+                        //            [insB setTransform:origTrans atTime:kCMTimeZero];
+                        //            [insB setTransform:origTran atTime:p];
+                        instruction.layerInstructions = [ NSArray arrayWithObjects:insC,insB,ins,insBlur, nil];
+                        videoComp.instructions = [ NSArray arrayWithObject:instruction];
+                        CMTime duration;
+                        NSLog(@"time in mute %f",CMTimeGetSeconds(self->mutableComposition.duration));
+                        //    if (CMTimeGetSeconds(audioAsset.duration) < CMTimeGetSeconds(asset.duration)) {
+                        //        duration = audioAsset.duration;
+                        //    } else
+                        {
+                            // duration = self->asset.duration;
+                        }
+                        
+                        //            double x = self->_scrollViewFake.frame.origin.x , y = _scrollViewFake.frame.origin.y , height = _scrollViewFake.frame.size.height
+                        //            ,width = self->_scrollViewFake.frame.size.width;
+                        //            NSLog(@"checking %f %f %f %f",x,y,width,height);
+                        NSLog(@"FF %f %f %f %f",self->_frameGenerateView.frame.origin.x,_frameGenerateView.frame.origin.y,_frameGenerateView.frame.size.width,_frameGenerateView.frame.size.height);
+                        self->_scrollView = [[thumbnailScrollView alloc] initWithFrame:CGRectMake(0,0,_frameGenerateView.frame.size.width, _frameGenerateView.frame.size
+                                                                                                  .height) withDelegate:self andAsset:tempComposition  frameView:_frameGenerateView];
+                        [self->_frameGenerateView addSubview:self->_scrollView];
+                        // temporary view
+                        
+                        self->_frameGenerateView.layer.cornerRadius = 4 ;
+                        self->_frameGenerateView.layer.masksToBounds = true ;
+                        
+                        //[tempView addSubview:slider];//
+                        //   [self.outsideOfFrameGenerateView addSubview:self->seekBar];
+                        
+                        ///// bound view drawing
+                        
+                        //self->startBound.backgroundColor = [ UIColor blueColor ];
+                        
+                        [self->_outsideOfFrameGenerateView addSubview:self->startBound];
+                        [self->_outsideOfFrameGenerateView addSubview:self->endBound];
+                        self->sliderScroll.maximumValue = self->_scrollView.contentSize.width;
+                        NSLog(@"slide %f",self->sliderScroll.maximumValue);
+                        UIPanGestureRecognizer *startPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleStartPan:)];
+                        [self->startBound addGestureRecognizer:startPanGR];
+                        self->startBound.userInteractionEnabled = YES;
+                        UIView *tempView = [[UIView alloc]initWithFrame:(CGRect)CGRectMake(0, SCREEN_HEIGHT-200, 0.5, 0.5)];
+                        [self.view addSubview:tempView];
+                        UIPanGestureRecognizer *endPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleEndPan:)];
+                        [self->endBound addGestureRecognizer:endPanGR];
+                        self->endBound.userInteractionEnabled = YES ;
+                        
+                        
+                        UIPanGestureRecognizer *splitBatPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSplitPan:)];
+                        [self->_splitBar addGestureRecognizer:splitBatPan];
+                        self->_splitBar.userInteractionEnabled = YES ;
+                        
+                        
+                        
+                        UIPanGestureRecognizer *seekBarTouch = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSeekBarPan:)];
+                        [self->_seekBar addGestureRecognizer:seekBarTouch];
+                        self->_seekBar.userInteractionEnabled = YES;
+                        /////// play time show view initialization
+                        //[self->_toast setCenter:CGPointMake( self->seekBar.frame.origin.x+15 ,self->_toast.center.y)];
+                        
+                        // [seekBar setCenter:CGPointMake(25,seekBar.center.y)];
+                        //[seekBar removeFromSuperview];
+                        
+                        self->playerItem = [AVPlayerItem playerItemWithAsset:mainComposition];
+                        self->playerItem.videoComposition = videoComp;
+                        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:self->playerItem];
+                        self->player = [AVPlayer playerWithPlayerItem:self->playerItem];
+                        [self->player seekToTime:CMTimeMakeWithSeconds((self->videoTotalTime/(self->_scrollView.contentSize.width)), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+                        //  player.frame = self.playerView.bounds;
+                        // __weak NSObject *weakSelf = self;
+                        
+                        //     [_toastStartBound setCenter:CGPointMake(-100,seekBar.center.y)];
+                        // _playerView.player = player;
+                        [self.playerView setOk:self->playerViewBound.bounds];
+                        [self.playerView setNeedsDisplay];
+                        [self.playerView setPlayer:self->player];
+                        //            NSDateComponentsFormatter *dateComponentsFormatter = [[NSDateComponentsFormatter alloc] init];
+                        //            dateComponentsFormatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
+                        //            dateComponentsFormatter.allowedUnits = (NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond);
+                        //            NSString *timeString = @" TOTAL" ;
+                        //            self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [dateComponentsFormatter stringFromTimeInterval:self->videoTotalTime] ];
+                        NSString *timeString = @" TOTAL" ;
+                        self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [self timeFormatted:(int)videoTotalTime] ];
+                        timeNeededForExtraOutsideFrameGenerate = ((videoTotalTime/SCREEN_WIDTH)*(SCREEN_WIDTH-_frameGenerateView.frame.size.width))/2;
+                        xPosForExtraTime = (_frameGenerateView.frame.size.width/videoTotalTime)*timeNeededForExtraOutsideFrameGenerate;
+                        [_toastStartBound setCenter:CGPointMake(-1000,_toast.center.y)];
+                        [_toastEndBound setCenter:CGPointMake(-1000,_toast.center.y)];
+                        
+                        /////// split view initialization
+                        selectOption = 0;
+                        _cutView.layer.zPosition = 0 ;
+                        _splitViewStart.layer.zPosition = 1;
+                        _splitViewStart.layer.opacity = 0.92;
+                        _splitViewStart.frame =  CGRectMake(_frameGenerateView.frame.origin.x-startBound.frame.size.width,_cutView.frame.origin.y, startBound.frame.origin.x, _frameGenerateView.frame.size.height);
+                        _splitViewEnd.layer.zPosition = 1 ;
+                        _splitViewEnd.layer.opacity = 0.92 ;
+                        _splitViewEnd.frame =  CGRectMake( endBound.frame.origin.x,_cutView.frame.origin.y, _frameGenerateView.frame.size.width - endBound.frame.origin.x
+                                                          , _frameGenerateView.frame.size.height);
+                        startBound.image = [UIImage imageNamed:@"Group 639"];
+                        endBound.image = [UIImage imageNamed:@"Group 640"];
+                        _splitBar.layer.zPosition=-10;
+                        startBoundYpos = startBound.center.y;
+                        endBoundYpos = endBound.center.y;
+                    });
+                    
+                    //dispatch_semaphore_signal(semaphore);
+                }];
+            }
+           
+        }];
+    });
+    dispatch_sync(serialQ, ^{ });
 
-    [[PHImageManager defaultManager] requestAVAssetForVideo:_passet options:options resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self->asset = avasset;
-            AVMutableComposition *mainComposition = [[AVMutableComposition alloc] init];
-            
-            
-            AVMutableComposition *tempComposition = [[AVMutableComposition alloc] init];
-            
-            AVMutableCompositionTrack *compositionVideoTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-            AVMutableCompositionTrack *compositionAudioTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-            
-            AVMutableCompositionTrack *tempTrack = [tempComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-            NSError *audioError;
-            NSError *videoError;
-            CMTime insertTime=kCMTimeZero;
-            
-            AVAssetTrack *videoTrack = [ avasset tracksWithMediaType:AVMediaTypeVideo].firstObject;
-            AVAssetTrack *audioTrack = [avasset tracksWithMediaType:AVMediaTypeAudio].firstObject;
-            [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: videoTrack atTime:insertTime error:&videoError];
-            [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: audioTrack atTime:insertTime error:&audioError];
-            insertTime = avasset.duration;
-            double t = CMTimeGetSeconds(avasset.duration);
-            CMTime p = CMTimeMakeWithSeconds(t-5, NSEC_PER_SEC);
-            AVAssetTrack *trackB =[ videoAssetHorseRide tracksWithMediaType:AVMediaTypeVideo].firstObject;
-            AVAssetTrack *trackBaudio = [videoAssetHorseRide tracksWithMediaType:AVMediaTypeAudio].firstObject;
-            
-            AVMutableCompositionTrack *testTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-            
-            [testTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetHorseRide.duration) ofTrack: trackB atTime:p error:&videoError];
-            //[testTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetHorseRide.duration) ofTrack: trackBaudio atTime:p error:&audioError];
-            
-            
-            if (videoError) {
-                NSLog(@"Error - %@", videoError.debugDescription);
-            }
-            if (audioError) {
-                NSLog(@"Error - %@", audioError.debugDescription);
-            }
-            // insertTime=CMTimeMakeWithSeconds(CMTimeGetSeconds(insertTime), NSEC_PER_SEC);
-            
-            [tempTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: videoTrack atTime:kCMTimeZero error:&videoError];
-            [tempTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: trackB atTime:asset.duration error:&videoError];
-            
-            insertTime = avasset.duration;
-            AVMutableVideoCompositionLayerInstruction *insB = [ AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack: testTrack];
-            
-            AVMutableVideoCompositionLayerInstruction *ins = [ AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack: compositionVideoTrack];
-            AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-            instruction.timeRange = CMTimeRangeMake(kCMTimeZero, mainComposition.duration);
-
-            CGSize originalSize = CGSizeMake( _viewPlayer.frame.size.width *1.5 ,  _viewPlayer.frame.size.height*1.5);
-
-              CGSize videoSizeB = CGSizeApplyAffineTransform(trackB.naturalSize,trackB.preferredTransform);
-            AVMutableVideoComposition *videoComp = [ AVMutableVideoComposition videoComposition];
-            videoComp.renderSize = originalSize;
-            videoComp.frameDuration = CMTimeMake(1, 30);
-            [insB setCropRectangleRampFromStartCropRectangle:CGRectMake(0, 0,0 ,0)  toEndCropRectangle:CGRectMake(0, 0,videoSizeB.width,videoSizeB.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(5, NSEC_PER_SEC))];
-            //[insB setCropRectangleRampFromStartCropRectangle:CGRectMake(0, 0,0 ,0)  toEndCropRectangle:CGRectMake(0, 0,videoSizeB.width,videoSizeB.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(10, NSEC_PER_SEC))];
-            
-            
-            CGSize videoSize = CGSizeApplyAffineTransform(videoTrack.naturalSize,videoTrack.preferredTransform);
-            videoSize = CGSizeMake(fabs(videoSize.width), fabs(videoSize.height));
-            CGAffineTransform origTrans = videoTrack.preferredTransform ;
-            if(videoSize.width>videoSize.height){
-                CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.width/videoSize.width), fabs(originalSize.width/videoSize.width));
-                origTrans = CGAffineTransformConcat(origTrans, scale);
-                double height = fabs(originalSize.width/videoSize.width)*videoSize.height;
-                CGAffineTransform translate = CGAffineTransformMakeTranslation(0, (originalSize.height-height)/2);
-                origTrans=  CGAffineTransformConcat(origTrans,translate) ;
-            }else {
-                CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.height), fabs(originalSize.height/videoSize.height));
-                origTrans = CGAffineTransformConcat(origTrans, scale);
-                double width = fabs(originalSize.height/videoSize.height)*videoSize.width;
-                CGAffineTransform translate = CGAffineTransformMakeTranslation((originalSize.width-width)/2, 0);
-                origTrans=  CGAffineTransformConcat(origTrans,translate) ;
-            }
-            
-            
-            
-          
-            
-            videoSizeB = CGSizeMake(fabs(videoSizeB.width), fabs(videoSizeB.height));
-           // [ins setCropRectangle:CGRectMake(0, 0,videoSizeB.width-100,videoSizeB.height) atTime:avasset.duration];
-            
-            
-            CGAffineTransform origTran = trackB.preferredTransform ;
-            if(videoSizeB.width>videoSizeB.height){
-                CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.width/videoSizeB.width), fabs(originalSize.width/videoSizeB.width));
-                origTran = CGAffineTransformConcat(origTran, scale);
-                double height = fabs(originalSize.width/videoSizeB.width)*videoSizeB.height;
-                CGAffineTransform translate = CGAffineTransformMakeTranslation(0, (originalSize.height-height)/2);
-                origTran=  CGAffineTransformConcat(origTran,translate) ;
-            }else {
-                CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSizeB.height), fabs(originalSize.height/videoSizeB.height));
-                origTran = CGAffineTransformConcat(origTran, scale);
-                double width = fabs(originalSize.height/videoSizeB.height)*videoSizeB.width;
-                CGAffineTransform translate = CGAffineTransformMakeTranslation((originalSize.width-width)/2, 0);
-                origTran =  CGAffineTransformConcat(origTran,translate) ;
-            }
-            
-            // CGSizeMake([UIScreen mainScreen].bounds.size.width * [[UIScreen mainScreen] scale] , [UIScreen mainScreen].bounds.size.height * [[UIScreen mainScreen] scale] );
-            double tt = CMTimeGetSeconds(asset.duration);
-            CMTime pp = CMTimeMakeWithSeconds(tt-5, NSEC_PER_SEC);
-            
-            [ins setTransform:origTrans atTime:kCMTimeZero];
-            [insB  setTransform:origTran atTime:pp];
-//            [insB setTransform:origTrans atTime:kCMTimeZero];
-//            [insB setTransform:origTran atTime:p];
-            instruction.layerInstructions = [ NSArray arrayWithObjects:insB,ins,nil];
-            videoComp.instructions = [ NSArray arrayWithObject:instruction];
-            CMTime duration;
-            NSLog(@"time in mute %f",CMTimeGetSeconds(self->mutableComposition.duration));
-            //    if (CMTimeGetSeconds(audioAsset.duration) < CMTimeGetSeconds(asset.duration)) {
-            //        duration = audioAsset.duration;
-            //    } else
-            {
-                // duration = self->asset.duration;
-            }
-            
-            //            double x = self->_scrollViewFake.frame.origin.x , y = _scrollViewFake.frame.origin.y , height = _scrollViewFake.frame.size.height
-            //            ,width = self->_scrollViewFake.frame.size.width;
-            //            NSLog(@"checking %f %f %f %f",x,y,width,height);
-            NSLog(@"FF %f %f %f %f",self->_frameGenerateView.frame.origin.x,_frameGenerateView.frame.origin.y,_frameGenerateView.frame.size.width,_frameGenerateView.frame.size.height);
-            self->_scrollView = [[thumbnailScrollView alloc] initWithFrame:CGRectMake(0,0,_frameGenerateView.frame.size.width, _frameGenerateView.frame.size
-                                                                                      .height) withDelegate:self andAsset:tempComposition  frameView:_frameGenerateView];
-            [self->_frameGenerateView addSubview:self->_scrollView];
-            // temporary view
-            //NSLog(@"tot %f content %f",self->videoTotalTime,videoTotalTime*3*100);
-            
-            //            UIView *tempView = [[UIView alloc]initWithFrame:(CGRect)CGRectMake(0, SCREEN_HEIGHT-200, 0.5, 0.5)];
-            //            tempView.backgroundColor = [UIColor clearColor];
-            //            [self.view addSubview:tempView];
-            // seekbar initialiaztion
-            //(void)(self->posX = 0) ,self->currentTime = 0 ;
-            //            self->seekBar = [[UIView alloc] initWithFrame:CGRectMake(60,-2,6*([UIScreen mainScreen].bounds.size.width/414), self->_frameGenerateView.frame.size
-            //                                                                     .height+4)];
-            //            self->seekBar.backgroundColor = [UIColor whiteColor];
-            //            self->seekBar.layer.cornerRadius = 3;
-            //            //seekBar.layer.masksToBounds = true;
-            //            self->seekBar.layer.shadowColor = [UIColor blackColor].CGColor;
-            //            self->seekBar.layer.shadowOpacity = 100;
-            //            self->seekBar.layer.shadowRadius = 6;// blur effect
-            //seekBar.layer.shadowPath = shadowPath.CGPath;
-            
-            self->_frameGenerateView.layer.cornerRadius = 4 ;
-            self->_frameGenerateView.layer.masksToBounds = true ;
-            
-            //[tempView addSubview:slider];//
-            //   [self.outsideOfFrameGenerateView addSubview:self->seekBar];
-            
-            ///// bound view drawing
-            
-            //self->startBound.backgroundColor = [ UIColor blueColor ];
-            
-            [self->_outsideOfFrameGenerateView addSubview:self->startBound];
-            [self->_outsideOfFrameGenerateView addSubview:self->endBound];
-            self->sliderScroll.maximumValue = self->_scrollView.contentSize.width;
-            NSLog(@"slide %f",self->sliderScroll.maximumValue);
-            UIPanGestureRecognizer *startPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleStartPan:)];
-            [self->startBound addGestureRecognizer:startPanGR];
-            self->startBound.userInteractionEnabled = YES;
-            UIView *tempView = [[UIView alloc]initWithFrame:(CGRect)CGRectMake(0, SCREEN_HEIGHT-200, 0.5, 0.5)];
-            [self.view addSubview:tempView];
-            UIPanGestureRecognizer *endPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleEndPan:)];
-            [self->endBound addGestureRecognizer:endPanGR];
-            self->endBound.userInteractionEnabled = YES ;
-            
-            
-            UIPanGestureRecognizer *splitBatPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSplitPan:)];
-            [self->_splitBar addGestureRecognizer:splitBatPan];
-            self->_splitBar.userInteractionEnabled = YES ;
-            
-            
-            
-            UIPanGestureRecognizer *seekBarTouch = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSeekBarPan:)];
-            [self->_seekBar addGestureRecognizer:seekBarTouch];
-            self->_seekBar.userInteractionEnabled = YES;
-            /////// play time show view initialization
-            //[self->_toast setCenter:CGPointMake( self->seekBar.frame.origin.x+15 ,self->_toast.center.y)];
-            
-            // [seekBar setCenter:CGPointMake(25,seekBar.center.y)];
-            //[seekBar removeFromSuperview];
-            
-            self->playerItem = [AVPlayerItem playerItemWithAsset:mainComposition];
-            self->playerItem.videoComposition = videoComp;
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:self->playerItem];
-            self->player = [AVPlayer playerWithPlayerItem:self->playerItem];
-            [self->player seekToTime:CMTimeMakeWithSeconds((self->videoTotalTime/(self->_scrollView.contentSize.width)), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-            //  player.frame = self.playerView.bounds;
-            // __weak NSObject *weakSelf = self;
-            
-            //     [_toastStartBound setCenter:CGPointMake(-100,seekBar.center.y)];
-            // _playerView.player = player;
-            [self.playerView setOk:self->playerViewBound.bounds];
-            [self.playerView setNeedsDisplay];
-            [self.playerView setPlayer:self->player];
-            //            NSDateComponentsFormatter *dateComponentsFormatter = [[NSDateComponentsFormatter alloc] init];
-            //            dateComponentsFormatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
-            //            dateComponentsFormatter.allowedUnits = (NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond);
-            //            NSString *timeString = @" TOTAL" ;
-            //            self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [dateComponentsFormatter stringFromTimeInterval:self->videoTotalTime] ];
-            NSString *timeString = @" TOTAL" ;
-            self->_totalTimeShowLable.text = [NSString stringWithFormat:@"%@  %@",timeString, [self timeFormatted:(int)videoTotalTime] ];
-            timeNeededForExtraOutsideFrameGenerate = ((videoTotalTime/SCREEN_WIDTH)*(SCREEN_WIDTH-_frameGenerateView.frame.size.width))/2;
-            xPosForExtraTime = (_frameGenerateView.frame.size.width/videoTotalTime)*timeNeededForExtraOutsideFrameGenerate;
-            [_toastStartBound setCenter:CGPointMake(-1000,_toast.center.y)];
-            [_toastEndBound setCenter:CGPointMake(-1000,_toast.center.y)];
-            
-            /////// split view initialization
-            selectOption = 0;
-            _cutView.layer.zPosition = 0 ;
-            _splitViewStart.layer.zPosition = 1;
-            _splitViewStart.layer.opacity = 0.92;
-            _splitViewStart.frame =  CGRectMake(_frameGenerateView.frame.origin.x-startBound.frame.size.width,_cutView.frame.origin.y, startBound.frame.origin.x, _frameGenerateView.frame.size.height);
-            _splitViewEnd.layer.zPosition = 1 ;
-            _splitViewEnd.layer.opacity = 0.92 ;
-            _splitViewEnd.frame =  CGRectMake( endBound.frame.origin.x,_cutView.frame.origin.y, _frameGenerateView.frame.size.width - endBound.frame.origin.x
-                                              , _frameGenerateView.frame.size.height);
-            startBound.image = [UIImage imageNamed:@"Group 639"];
-            endBound.image = [UIImage imageNamed:@"Group 640"];
-            _splitBar.layer.zPosition=-10;
-            startBoundYpos = startBound.center.y;
-            endBoundYpos = endBound.center.y;
-        });
-        
-        //dispatch_semaphore_signal(semaphore);
-    }];
+   
     //  dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     
     
     
     
 }
+
 - (IBAction)chooseTrimCutSplit:(id)sender {
     
     UISegmentedControl *s = (UISegmentedControl *) sender ;
@@ -388,6 +435,80 @@ NSURL * dataFilePath(NSString *path){
     }
     
 }
+
+-(void)applyBlurOnAsset:(AVAsset *)asset Completion:(void(^)(BOOL success, NSError* error, NSURL* videoUrl))completion{
+    CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
+    AVVideoComposition *composition = [AVVideoComposition videoCompositionWithAsset: asset
+                                                       applyingCIFiltersWithHandler:^(AVAsynchronousCIImageFilteringRequest *request){
+                                                           // Clamp to avoid blurring transparent pixels at the image edges
+                                                           CIImage *source = [request.sourceImage imageByClampingToExtent];
+                                                           [filter setValue:source forKey:kCIInputImageKey];
+                                                           
+                                                           [filter setValue:[NSNumber numberWithDouble:10.0] forKey:kCIInputRadiusKey];
+                                                           
+                                                           // Crop the blurred output to the bounds of the original image
+                                                           CIImage *output = [filter.outputImage imageByCroppingToRect:request.sourceImage.extent];
+                                                           
+                                                           // Provide the filter output to the composition
+                                                           [request finishWithImage:output context:nil];
+                                                       }];
+    
+    
+    NSURL *outputUrl =  dataFilePath(@"tmpPost2.mp4");
+    
+    //Remove any prevouis videos at that path
+//    [[NSFileManager defaultManager]  removeItemAtURL:outputUrl error:nil];
+    
+    AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetHighestQuality] ;
+    
+    // assign all instruction for the video processing (in this case the transformation for cropping the video
+    exporter.videoComposition = composition;
+    exporter.shouldOptimizeForNetworkUse = YES;
+ //   exporter.timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration);
+    exporter.outputFileType = AVFileTypeQuickTimeMovie;
+   
+    
+    if (outputUrl){
+        
+        exporter.outputURL = outputUrl;
+        [exporter exportAsynchronouslyWithCompletionHandler:^{
+            
+            switch ([exporter status]) {
+                case AVAssetExportSessionStatusFailed:
+                    NSLog(@"crop Export failed: %@", [[exporter error] localizedDescription]);
+                    if (completion){
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            completion(NO,[exporter error],nil);
+                        });
+                        return;
+                    }
+                    break;
+                case AVAssetExportSessionStatusCancelled:
+                    NSLog(@"crop Export canceled");
+                    if (completion){
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            completion(NO,nil,nil);
+                        });
+                        return;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            
+            if (completion){
+                NSLog(@"success");
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"success");
+                    self->blurUrl = outputUrl;
+                    completion(YES,nil,outputUrl);
+                });
+            }
+            
+        }];
+    }
+}
+
 - (void)splitVideo{
     
     
