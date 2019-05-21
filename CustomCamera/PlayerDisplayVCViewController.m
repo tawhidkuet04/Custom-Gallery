@@ -394,7 +394,19 @@
         CGAffineTransform scale2 ;
         CGAffineTransform translate2;
         CGAffineTransform origTrans2 = videoTrack.preferredTransform ;
-        origTrans2 = CGAffineTransformConcat(origTrans2, CGAffineTransformMakeScale(1.5, 1.5));
+        if(videoSize.width>videoSize.height){
+            scale2 = CGAffineTransformMakeScale(fabs(originalSize.width/videoSize.width)*2, fabs(originalSize.width/videoSize.width)*2);
+            origTrans2 = CGAffineTransformConcat(origTrans2, scale2);
+            double height = fabs(originalSize.width/videoSize.width)*videoSize.height;
+            translate2 = CGAffineTransformMakeTranslation(0, 0);
+            origTrans2=  CGAffineTransformConcat(origTrans2,translate2) ;
+        }else {
+            scale2 = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.height)*3, fabs(originalSize.height/videoSize.height)*3);
+            origTrans2 = CGAffineTransformConcat(origTrans2, scale2);
+            double width = fabs(originalSize.height/videoSize.height)*videoSize.width;
+            translate2 = CGAffineTransformMakeTranslation(0, 0);
+            origTrans2=  CGAffineTransformConcat(origTrans2,translate2) ;
+        }
         
         CGAffineTransform ok = CGAffineTransformConcat(scale, translate);
         CIImage *p = [output imageByApplyingTransform:origTrans] ;
@@ -407,7 +419,7 @@
         // Vary filter parameters based on video timing
        // Float64 seconds = CMTimeGetSeconds(request.compositionTime);
         [filter setValue:@(0.0) forKey:kCIInputRadiusKey];
-        [filter2 setValue:@(20.0) forKey:kCIInputRadiusKey];
+        [filter2 setValue:@(30.0) forKey:kCIInputRadiusKey];
 
 
         [filter3 setValue:filter2.outputImage forKey:kCIInputBackgroundImageKey];
