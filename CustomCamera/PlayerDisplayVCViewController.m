@@ -158,7 +158,7 @@
                         AVMutableVideoComposition *vidcom = [self CustomVideoComposition:mainComposition];
                                CGSize originalSize = CGSizeMake( _viewPlayer.frame.size.width ,  _viewPlayer.frame.size.height);
                         vidcom.renderSize = originalSize;
-                        self->playerItem.videoComposition = [self CustomVideoComposition:mainComposition];
+                        self->playerItem.videoComposition = vidcom;
                         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:self->playerItem];
                         self->player = [AVPlayer playerWithPlayerItem:self->playerItem];
                         [self->player seekToTime:CMTimeMakeWithSeconds((self->videoTotalTime/(self->_scrollView.contentSize.width)), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
@@ -272,13 +272,14 @@
         NSLog(@"Split");
     }
 }
-//
+////
 //- (AVMutableVideoComposition*)CustomVideoComposition:(AVMutableComposition*)composition{
 //    CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
 //    return [AVMutableVideoComposition videoCompositionWithAsset: composition applyingCIFiltersWithHandler:^(AVAsynchronousCIImageFilteringRequest *request){
 //
 //        // Clamp to avoid blurring transparent pixels at the image edges
 //        CIImage *source = [request.sourceImage imageByClampingToExtent];
+//        source = [source imageByCroppingToRect: CGRectMake(0, 0,request.sourceImage.extent.size.width,equest.sourceImage.extent.size.height)];
 //        UIImage *test =[[UIImage alloc]initWithCIImage:source];
 //
 //
@@ -286,20 +287,20 @@
 //        CGSize originalSize = CGSizeMake( _viewPlayer.frame.size.width ,  _viewPlayer.frame.size.height);
 //
 //        CGSize videoSize = CGSizeApplyAffineTransform(videoTrack.naturalSize,videoTrack.preferredTransform);
-//        videoSize = CGSizeMake(fabs(test.size.width), fabs(test.size.height));
-////        CGAffineTransform scale ;
+//        videoSize = CGSizeMake(fabs(videoSize.width), fabs(videoSize.height));
+//        CGAffineTransform scale ;
 //        CGAffineTransform translate;
-////        if(videoSize.width>videoSize.height){
-////            scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.width)*4, fabs(originalSize.height/videoSize.width)*4);
-////            double height = fabs(originalSize.width/videoSize.width)*videoSize.height;
-////
-////            translate = CGAffineTransformMakeTranslation(0, (originalSize.height-height)/2);
-////        }else {
-////            scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.height), fabs(originalSize.height/videoSize.height));
-////            double width = fabs(originalSize.height/videoSize.height)*videoSize.width;
-////            translate = CGAffineTransformMakeTranslation((originalSize.width-width)/2, 0);
-////
-////        }
+//        if(videoSize.width>videoSize.height){
+//            scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.width), fabs(originalSize.height/videoSize.width));
+//            double height = fabs(originalSize.width/videoSize.width)*videoSize.height;
+//
+//            translate = CGAffineTransformMakeTranslation(0, (originalSize.height-height)/2);
+//        }else {
+//            scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.height), fabs(originalSize.height/videoSize.height));
+//            double width = fabs(originalSize.height/videoSize.height)*videoSize.width;
+//            translate = CGAffineTransformMakeTranslation((originalSize.width-width)/2, 0);
+//
+//        }
 //
 ////       // CIImage* scaleImage = [output imageByApplyingTransform:scale];
 ////
@@ -309,24 +310,25 @@
 ////
 ////        //        CGAffineTransform origTrans = videoTrack.preferredTransform ;
 //
-//
-//
+//       CGAffineTransform ok = CGAffineTransformConcat(scale, translate);
+//        source=[source imageByApplyingTransform:ok];
 //        // Vary filter parameters based on video timing
 //        Float64 seconds = CMTimeGetSeconds(request.compositionTime);
+//        [filter setValue:source forKey:kCIInputImageKey];
 //        [filter setValue:@(1.0) forKey:kCIInputRadiusKey];
 //
 //        // Crop the blurred output to the bounds of the original image
 //        // Provide the filter output to the composition
-//       [filter setValue:source forKey:kCIInputImageKey];
-//        CIImage *output = [filter.outputImage imageByCroppingToRect:CGRectMake(0, 0, test.size.width, test.size.height)];
+//
+//       //CIImage *output = [filter.outputImage imageByCroppingToRect:CGRectMake(0, 0, originalSize.width, originalSize.height)];
 //        CIImage* inputImage; // assume this exists
 //
 //        float factor = 1;
-//        CGAffineTransform scale = CGAffineTransformMakeScale(factor,factor);
-//        //CGAffineTransform ok = CGAffineTransformConcat(scale, translate);
+//      // CGAffineTransform scale = CGAffineTransformMakeScale(factor,factor);
+//
 //        //        ;
-//        CIImage *final = [output imageByApplyingTransform:scale] ;
-//        [request finishWithImage:final context:nil];
+//       // CIImage *final =  ;
+//        [request finishWithImage:filter.outputImage context:nil];
 //    }];
 //}
 - (AVMutableVideoComposition*)CustomVideoComposition:(AVMutableComposition*)composition{
@@ -338,8 +340,8 @@
         // Clamp to avoid blurring transparent pixels at the image edges
         CIImage *output = [request.sourceImage imageByClampingToExtent];
        output = [output imageByCroppingToRect:request.sourceImage.extent];
-      //  CGSize videoSize = CGSizeApplyAffineTransform(videoTrack.naturalSize,videoTrack.preferredTransform);
-        CGSize videoSize = CGSizeMake(fabs(request.sourceImage.extent.size.width), fabs(request.sourceImage.extent.size.height));
+        CGSize videoSize = CGSizeApplyAffineTransform(videoTrack.naturalSize,videoTrack.preferredTransform);
+         videoSize = CGSizeMake(fabs(videoSize.width), fabs(videoSize.height));
    //     UIImage *test =[[UIImage alloc]initWithCIImage:source];
         NSLog(@"sisisisi %f %f",videoSize.width,videoSize.height);
         //[filter setValue:source forKey:kCIInputImageKey];
@@ -357,32 +359,57 @@
         double canvasX = ((request.sourceImage.extent.size.width)/(SCREEN_WIDTH))*(originalSize.width);
          double canvasY = ((request.sourceImage.extent.size.height)/(SCREEN_WIDTH))*(originalSize.width);
 //        NSLog(@"aaaa %f %f",canvasX,canvasY);
+//        CGAffineTransform scale ;
+//                CGAffineTransform translate;
+//                if(videoSize.width>videoSize.height){
+//                    scale = CGAffineTransformMakeScale(1, output.extent.size.height/output.extent.size.width);
+//                    double height = videoSize.height-(videoSize.height*(output.extent.size.height/output.extent.size.width));
+//
+//                    translate = CGAffineTransformMakeTranslation(0, (height)/2);
+//                }else {
+//                    scale = CGAffineTransformMakeScale(request.sourceImage.extent.size.width/request.sourceImage.extent.size.height, 1);
+//                    double width = videoSize.width-(videoSize.width*(request.sourceImage.extent.size.width/request.sourceImage.extent.size.height));
+//                    translate = CGAffineTransformMakeTranslation((width)/2, 0);
+//
+//                }
+        
         CGAffineTransform scale ;
-                CGAffineTransform translate;
-                if(videoSize.width>videoSize.height){
-                    scale = CGAffineTransformMakeScale(1, output.extent.size.height/output.extent.size.width);
-                    double height = videoSize.height-(videoSize.height*(output.extent.size.height/output.extent.size.width));
-
-                    translate = CGAffineTransformMakeTranslation(0, (height)/2);
-                }else {
-                    scale = CGAffineTransformMakeScale(request.sourceImage.extent.size.width/request.sourceImage.extent.size.height, 1);
-                    double width = videoSize.width-(videoSize.width*(request.sourceImage.extent.size.width/request.sourceImage.extent.size.height));
-                    translate = CGAffineTransformMakeTranslation((width)/2, 0);
-
-                }
+        CGAffineTransform translate;
+        CGAffineTransform origTrans = videoTrack.preferredTransform ;
+        if(videoSize.width>videoSize.height){
+             scale = CGAffineTransformMakeScale(fabs(originalSize.width/videoSize.width), fabs(originalSize.width/videoSize.width));
+            origTrans = CGAffineTransformConcat(origTrans, scale);
+            double height = fabs(originalSize.width/videoSize.width)*videoSize.height;
+            translate = CGAffineTransformMakeTranslation(0, (originalSize.height-height)/2);
+            origTrans=  CGAffineTransformConcat(origTrans,translate) ;
+        }else {
+            scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.height), fabs(originalSize.height/videoSize.height));
+            origTrans = CGAffineTransformConcat(origTrans, scale);
+            double width = fabs(originalSize.height/videoSize.height)*videoSize.width;
+            translate = CGAffineTransformMakeTranslation((originalSize.width-width)/2, 0);
+            origTrans=  CGAffineTransformConcat(origTrans,translate) ;
+        }
+        
+        
+        CGAffineTransform scale2 ;
+        CGAffineTransform translate2;
+        CGAffineTransform origTrans2 = videoTrack.preferredTransform ;
+        origTrans2 = CGAffineTransformConcat(origTrans2, CGAffineTransformMakeScale(1.5, 1.5));
+        
         CGAffineTransform ok = CGAffineTransformConcat(scale, translate);
-        CIImage *p = [output imageByApplyingTransform:ok] ;
-        [filter2 setValue:output forKey:kCIInputImageKey];
+        CIImage *p = [output imageByApplyingTransform:origTrans] ;
+        
+        [filter2 setValue:[output imageByApplyingTransform:origTrans2] forKey:kCIInputImageKey];
         [filter setValue:p forKey:kCIInputImageKey];
-        
-        
-        
+
+
+
         // Vary filter parameters based on video timing
        // Float64 seconds = CMTimeGetSeconds(request.compositionTime);
         [filter setValue:@(0.0) forKey:kCIInputRadiusKey];
         [filter2 setValue:@(20.0) forKey:kCIInputRadiusKey];
-        
-        
+
+
         [filter3 setValue:filter2.outputImage forKey:kCIInputBackgroundImageKey];
         [filter3 setValue:filter.outputImage forKey:kCIInputImageKey];
         [request finishWithImage:filter3.outputImage context:nil];
