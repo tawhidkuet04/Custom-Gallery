@@ -25,6 +25,7 @@
     AVAsset *asset2;
     NSURL *blurUrl;
     AVAsset *blurAsset;
+    AVAssetTrack *videoTrack;
     id observer;
     
     IBOutlet UIView *playerViewBound;
@@ -62,63 +63,32 @@
     options.deliveryMode = PHVideoRequestOptionsDeliveryModeAutomatic;
     options.networkAccessAllowed = YES;
     __block AVAsset *resultAsset;
-    dispatch_queue_t serialQ = dispatch_queue_create("serialQ", DISPATCH_QUEUE_SERIAL);
-    dispatch_async(serialQ, ^
-    {
-        [self applyBlurOnAsset:videoAssetHorseRide Completion:^(BOOL success, NSError *error, NSURL *videoUrl) {
-            if(success){
-                 blurAsset =  [[AVURLAsset alloc]initWithURL:videoUrl options:nil];
-                NSLog(@"DURATTTTT %f",CMTimeGetSeconds(blurAsset.duration));
-                NSLog(@"got");
-                
-                [[PHImageManager defaultManager] requestAVAssetForVideo:_passet options:options resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
+  
+    [[PHImageManager defaultManager] requestAVAssetForVideo:_passet options:options resultHandler:^(AVAsset * avasset, AVAudioMix * audioMix, NSDictionary * info) {
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self->asset = avasset;
-                        
-                        NSLog(@"DURATTTTT %f",CMTimeGetSeconds(blurAsset.duration));
-                        
                         
                         
                         AVMutableComposition *mainComposition = [[AVMutableComposition alloc] init];
                         
                         
-                        AVMutableComposition *tempComposition = [[AVMutableComposition alloc] init];
-                        
+                       
                         AVMutableCompositionTrack *compositionVideoTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
                         AVMutableCompositionTrack *compositionAudioTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-                        
-                        AVMutableCompositionTrack *tempTrack = [tempComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+                      
                         NSError *audioError;
                         NSError *videoError;
                         CMTime insertTime=kCMTimeZero;
                         
-                        AVAssetTrack *videoTrack = [ avasset tracksWithMediaType:AVMediaTypeVideo].firstObject;
+                        videoTrack = [ avasset tracksWithMediaType:AVMediaTypeVideo].firstObject;
                         AVAssetTrack *audioTrack = [avasset tracksWithMediaType:AVMediaTypeAudio].firstObject;
                         [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: videoTrack atTime:insertTime error:&videoError];
                         [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: audioTrack atTime:insertTime error:&audioError];
                         insertTime = avasset.duration;
-                        double t = CMTimeGetSeconds(avasset.duration);
-                        CMTime p = CMTimeMakeWithSeconds(t-2, NSEC_PER_SEC);
-                        AVAssetTrack *trackB =[ videoAssetHorseRide tracksWithMediaType:AVMediaTypeVideo].firstObject;
-                        AVAssetTrack *trackBaudio = [videoAssetHorseRide tracksWithMediaType:AVMediaTypeAudio].firstObject;
-                        
-                        AVMutableCompositionTrack *testTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-                        AVMutableCompositionTrack *testTrackAudio = [mainComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-                        
-                        [testTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetHorseRide.duration) ofTrack: trackB atTime:p error:&videoError];
-                        [testTrackAudio insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetHorseRide.duration) ofTrack: trackBaudio atTime:p error:&audioError];
-                        
-                        
-                        AVAssetTrack *blurVideo =[ blurAsset tracksWithMediaType:AVMediaTypeVideo].firstObject;
-                        AVAssetTrack *blurAudio = [blurAsset tracksWithMediaType:AVMediaTypeAudio].firstObject;
-                        
-                        AVMutableCompositionTrack *blurTrack = [mainComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-                        AVMutableCompositionTrack *blurTrackAudio = [mainComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-                        
-                        [blurTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, blurAsset.duration) ofTrack: blurVideo atTime:asset.duration error:&videoError];
-                        [blurTrackAudio insertTimeRange:CMTimeRangeMake(kCMTimeZero, blurAsset.duration) ofTrack: blurAudio atTime:asset.duration error:&audioError];
-                        
+                     
+                      
+                
                         
                         if (videoError) {
                             NSLog(@"Error - %@", videoError.debugDescription);
@@ -126,107 +96,8 @@
                         if (audioError) {
                             NSLog(@"Error - %@", audioError.debugDescription);
                         }
-                        // insertTime=CMTimeMakeWithSeconds(CMTimeGetSeconds(insertTime), NSEC_PER_SEC);
-                        
-                        [tempTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: videoTrack atTime:kCMTimeZero error:&videoError];
-                        [tempTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, avasset.duration) ofTrack: trackB atTime:asset.duration error:&videoError];
-                        
-                        insertTime = avasset.duration;
-                        AVMutableVideoCompositionLayerInstruction *insB = [ AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack: testTrack];
-                        
-                        AVMutableVideoCompositionLayerInstruction *ins = [ AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack: compositionVideoTrack];
-                        AVMutableVideoCompositionLayerInstruction *insC = [ AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack: testTrack];
-                        AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-                        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, mainComposition.duration);
-                        AVMutableVideoCompositionLayerInstruction *insBlur = [ AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack: blurTrack];
-                        
-                        CGSize videoSizeB = CGSizeApplyAffineTransform(trackB.naturalSize,trackB.preferredTransform);
-                        CGSize videoSize = CGSizeApplyAffineTransform(videoTrack.naturalSize,videoTrack.preferredTransform);
-                        CGSize originalSize = CGSizeMake( _viewPlayer.frame.size.width *1.5 ,  _viewPlayer.frame.size.height*1.5);
-                        videoSize = CGSizeMake(fabs(videoSize.width), fabs(videoSize.height));
-                        videoSizeB = CGSizeMake(fabs(videoSizeB.width), fabs(videoSizeB.height));
-                        
-                        AVMutableVideoComposition *videoComp = [ AVMutableVideoComposition videoComposition];
-                        videoComp.renderSize = originalSize;
-                        videoComp.frameDuration = CMTimeMake(1, 30);
-                        //videoComp.videoComposition = composition;
-                        //            [ins setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(kCMTimeZero , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        //            [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(0, 0,0 ,0)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width,videoSize.height) timeRange:CMTimeRangeMake(kCMTimeZero , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        //             CMTime po = CMTimeMakeWithSeconds(4, NSEC_PER_SEC);
-                        //             [ins setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(po , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        //            [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(videoSize.width/2,  videoSize.height/2 ,0 ,0)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width,videoSize.height) timeRange:CMTimeRangeMake(po , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        //            p = CMTimeMakeWithSeconds(8, NSEC_PER_SEC);
-                        //             [ins setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        //            [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(0,  0 ,0 ,videoSize.height)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width/2,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        //            [insC setCropRectangleRampFromStartCropRectangle:CGRectMake(videoSize.width,  0 ,0 ,videoSize.height)   toEndCropRectangle:CGRectMake(videoSize.width/2, 0,videoSize.width/2,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        //            p = CMTimeMakeWithSeconds(12, NSEC_PER_SEC);
-                        //             [ins setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        //            [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(videoSize.width,  0 ,0 ,videoSize.height)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        
-                        [ins setOpacityRampFromStartOpacity:1 toEndOpacity:0 timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        // [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(0,  0 ,0 ,videoSize.height)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width/2,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        //p = CMTimeMakeWithSeconds(12, NSEC_PER_SEC);
-                        [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(0,  0 ,0 ,videoSize.height)  toEndCropRectangle:CGRectMake(0, 0,videoSize.width/2,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        [ins setCropRectangleRampFromStartCropRectangle:CGRectMake(videoSizeB.width,  0 ,0 ,videoSize.height)   toEndCropRectangle:CGRectMake(0, 0,videoSize.width/2,videoSize.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        
-                        [insC setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        [insC setCropRectangleRampFromStartCropRectangle:CGRectMake(0,  0 ,0 ,videoSizeB.height)  toEndCropRectangle:CGRectMake(0, 0,videoSizeB.width/2,videoSizeB.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        [insB setOpacityRampFromStartOpacity:0 toEndOpacity:1 timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        
-                        [insB setCropRectangleRampFromStartCropRectangle:CGRectMake(videoSizeB.width,  0 ,0 ,videoSizeB.height)   toEndCropRectangle:CGRectMake(0, 0,videoSizeB.width,videoSizeB.height) timeRange:CMTimeRangeMake(p , CMTimeMakeWithSeconds(2, NSEC_PER_SEC))];
-                        // [ins setOpacity:0 atTime:asset.duration];
-                        
-                        CGAffineTransform origTrans = videoTrack.preferredTransform ;
-                        if(videoSize.width>videoSize.height){
-                            CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.width/videoSize.width), fabs(originalSize.width/videoSize.width));
-                            origTrans = CGAffineTransformConcat(origTrans, scale);
-                            double height = fabs(originalSize.width/videoSize.width)*videoSize.height;
-                            CGAffineTransform translate = CGAffineTransformMakeTranslation(0, (originalSize.height-height)/2);
-                            origTrans=  CGAffineTransformConcat(origTrans,translate) ;
-                        }else {
-                            CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.height), fabs(originalSize.height/videoSize.height));
-                            origTrans = CGAffineTransformConcat(origTrans, scale);
-                            double width = fabs(originalSize.height/videoSize.height)*videoSize.width;
-                            CGAffineTransform translate = CGAffineTransformMakeTranslation((originalSize.width-width)/2, 0);
-                            origTrans=  CGAffineTransformConcat(origTrans,translate) ;
-                        }
-                        
-                        
-                        
-                        
-                        
-                        
-                        // [ins setCropRectangle:CGRectMake(0, 0,videoSizeB.width-100,videoSizeB.height) atTime:avasset.duration];
-                        
-                        
-                        CGAffineTransform origTran = trackB.preferredTransform ;
-                        if(videoSizeB.width>videoSizeB.height){
-                            CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.width/videoSizeB.width), fabs(originalSize.width/videoSizeB.width));
-                            origTran = CGAffineTransformConcat(origTran, scale);
-                            double height = fabs(originalSize.width/videoSizeB.width)*videoSizeB.height;
-                            CGAffineTransform translate = CGAffineTransformMakeTranslation(0, (originalSize.height-height)/2);
-                            origTran=  CGAffineTransformConcat(origTran,translate) ;
-                        }else {
-                            CGAffineTransform scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSizeB.height), fabs(originalSize.height/videoSizeB.height));
-                            origTran = CGAffineTransformConcat(origTran, scale);
-                            double width = fabs(originalSize.height/videoSizeB.height)*videoSizeB.width;
-                            CGAffineTransform translate = CGAffineTransformMakeTranslation((originalSize.width-width)/2, 0);
-                            origTran =  CGAffineTransformConcat(origTran,translate) ;
-                        }
-                        
-                        // CGSizeMake([UIScreen mainScreen].bounds.size.width * [[UIScreen mainScreen] scale] , [UIScreen mainScreen].bounds.size.height * [[UIScreen mainScreen] scale] );
-                        double tt = CMTimeGetSeconds(asset.duration);
-                        CMTime pp = CMTimeMakeWithSeconds(tt-2, NSEC_PER_SEC);
-                        
-                        [ins setTransform:origTrans atTime:kCMTimeZero];
-                        [insB  setTransform:origTran atTime:pp];
-                        [insC setTransform:origTran atTime:pp];
-                    
-                        //            [insB setTransform:origTrans atTime:kCMTimeZero];
-                        //            [insB setTransform:origTran atTime:p];
-                        instruction.layerInstructions = [ NSArray arrayWithObjects:insC,insB,ins,insBlur, nil];
-                        videoComp.instructions = [ NSArray arrayWithObject:instruction];
-                        CMTime duration;
+                
+                     
                         NSLog(@"time in mute %f",CMTimeGetSeconds(self->mutableComposition.duration));
                         //    if (CMTimeGetSeconds(audioAsset.duration) < CMTimeGetSeconds(asset.duration)) {
                         //        duration = audioAsset.duration;
@@ -240,7 +111,7 @@
                         //            NSLog(@"checking %f %f %f %f",x,y,width,height);
                         NSLog(@"FF %f %f %f %f",self->_frameGenerateView.frame.origin.x,_frameGenerateView.frame.origin.y,_frameGenerateView.frame.size.width,_frameGenerateView.frame.size.height);
                         self->_scrollView = [[thumbnailScrollView alloc] initWithFrame:CGRectMake(0,0,_frameGenerateView.frame.size.width, _frameGenerateView.frame.size
-                                                                                                  .height) withDelegate:self andAsset:tempComposition  frameView:_frameGenerateView];
+                                                                                                  .height) withDelegate:self andAsset:mainComposition  frameView:_frameGenerateView];
                         [self->_frameGenerateView addSubview:self->_scrollView];
                         // temporary view
                         
@@ -284,7 +155,10 @@
                         //[seekBar removeFromSuperview];
                         
                         self->playerItem = [AVPlayerItem playerItemWithAsset:mainComposition];
-                        self->playerItem.videoComposition = videoComp;
+                        AVMutableVideoComposition *vidcom = [self CustomVideoComposition:mainComposition];
+                               CGSize originalSize = CGSizeMake( _viewPlayer.frame.size.width ,  _viewPlayer.frame.size.height);
+                        vidcom.renderSize = originalSize;
+                        self->playerItem.videoComposition = [self CustomVideoComposition:mainComposition];
                         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:self->playerItem];
                         self->player = [AVPlayer playerWithPlayerItem:self->playerItem];
                         [self->player seekToTime:CMTimeMakeWithSeconds((self->videoTotalTime/(self->_scrollView.contentSize.width)), NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
@@ -293,7 +167,7 @@
                         
                         //     [_toastStartBound setCenter:CGPointMake(-100,seekBar.center.y)];
                         // _playerView.player = player;
-                        [self.playerView setOk:self->playerViewBound.bounds];
+                     //   [self.playerView setOk:self->playerViewBound.bounds];
                         [self.playerView setNeedsDisplay];
                         [self.playerView setPlayer:self->player];
                         //            NSDateComponentsFormatter *dateComponentsFormatter = [[NSDateComponentsFormatter alloc] init];
@@ -309,8 +183,8 @@
                         [_toastEndBound setCenter:CGPointMake(-1000,_toast.center.y)];
                         
                         /////// split view initialization
-                        selectOption = 0;
-                        _cutView.layer.zPosition = 0 ;
+                        self->selectOption = 0;
+                        self->_cutView.layer.zPosition = 0 ;
                         _splitViewStart.layer.zPosition = 1;
                         _splitViewStart.layer.opacity = 0.92;
                         _splitViewStart.frame =  CGRectMake(_frameGenerateView.frame.origin.x-startBound.frame.size.width,_cutView.frame.origin.y, startBound.frame.origin.x, _frameGenerateView.frame.size.height);
@@ -327,11 +201,9 @@
                     
                     //dispatch_semaphore_signal(semaphore);
                 }];
-            }
+    
            
-        }];
-    });
-    dispatch_sync(serialQ, ^{ });
+
 
    
     //  dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
@@ -400,6 +272,179 @@
         NSLog(@"Split");
     }
 }
+//
+//- (AVMutableVideoComposition*)CustomVideoComposition:(AVMutableComposition*)composition{
+//    CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
+//    return [AVMutableVideoComposition videoCompositionWithAsset: composition applyingCIFiltersWithHandler:^(AVAsynchronousCIImageFilteringRequest *request){
+//
+//        // Clamp to avoid blurring transparent pixels at the image edges
+//        CIImage *source = [request.sourceImage imageByClampingToExtent];
+//        UIImage *test =[[UIImage alloc]initWithCIImage:source];
+//
+//
+//
+//        CGSize originalSize = CGSizeMake( _viewPlayer.frame.size.width ,  _viewPlayer.frame.size.height);
+//
+//        CGSize videoSize = CGSizeApplyAffineTransform(videoTrack.naturalSize,videoTrack.preferredTransform);
+//        videoSize = CGSizeMake(fabs(test.size.width), fabs(test.size.height));
+////        CGAffineTransform scale ;
+//        CGAffineTransform translate;
+////        if(videoSize.width>videoSize.height){
+////            scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.width)*4, fabs(originalSize.height/videoSize.width)*4);
+////            double height = fabs(originalSize.width/videoSize.width)*videoSize.height;
+////
+////            translate = CGAffineTransformMakeTranslation(0, (originalSize.height-height)/2);
+////        }else {
+////            scale = CGAffineTransformMakeScale(fabs(originalSize.height/videoSize.height), fabs(originalSize.height/videoSize.height));
+////            double width = fabs(originalSize.height/videoSize.height)*videoSize.width;
+////            translate = CGAffineTransformMakeTranslation((originalSize.width-width)/2, 0);
+////
+////        }
+//
+////       // CIImage* scaleImage = [output imageByApplyingTransform:scale];
+////
+////        //CGAffineTransform translate = CGAffineTransformMakeTranslation(0,0);
+////        CIImage* translateImage = [scaleImage imageByApplyingTransform:translate];
+////
+////
+////        //        CGAffineTransform origTrans = videoTrack.preferredTransform ;
+//
+//
+//
+//        // Vary filter parameters based on video timing
+//        Float64 seconds = CMTimeGetSeconds(request.compositionTime);
+//        [filter setValue:@(1.0) forKey:kCIInputRadiusKey];
+//
+//        // Crop the blurred output to the bounds of the original image
+//        // Provide the filter output to the composition
+//       [filter setValue:source forKey:kCIInputImageKey];
+//        CIImage *output = [filter.outputImage imageByCroppingToRect:CGRectMake(0, 0, test.size.width, test.size.height)];
+//        CIImage* inputImage; // assume this exists
+//
+//        float factor = 1;
+//        CGAffineTransform scale = CGAffineTransformMakeScale(factor,factor);
+//        //CGAffineTransform ok = CGAffineTransformConcat(scale, translate);
+//        //        ;
+//        CIImage *final = [output imageByApplyingTransform:scale] ;
+//        [request finishWithImage:final context:nil];
+//    }];
+//}
+- (AVMutableVideoComposition*)CustomVideoComposition:(AVMutableComposition*)composition{
+    CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
+    CIFilter *filter2 = [CIFilter filterWithName:@"CIGaussianBlur"];
+    CIFilter *filter3 = [CIFilter filterWithName:@"CISourceOverCompositing"];
+    return [AVMutableVideoComposition videoCompositionWithAsset: composition applyingCIFiltersWithHandler:^(AVAsynchronousCIImageFilteringRequest *request){
+
+        // Clamp to avoid blurring transparent pixels at the image edges
+        CIImage *output = [request.sourceImage imageByClampingToExtent];
+       output = [output imageByCroppingToRect:request.sourceImage.extent];
+      //  CGSize videoSize = CGSizeApplyAffineTransform(videoTrack.naturalSize,videoTrack.preferredTransform);
+        CGSize videoSize = CGSizeMake(fabs(request.sourceImage.extent.size.width), fabs(request.sourceImage.extent.size.height));
+   //     UIImage *test =[[UIImage alloc]initWithCIImage:source];
+        NSLog(@"sisisisi %f %f",videoSize.width,videoSize.height);
+        //[filter setValue:source forKey:kCIInputImageKey];
+
+
+        // Vary filter parameters based on video timing
+       // Float64 seconds = CMTimeGetSeconds(request.compositionTime);
+       // [filter setValue:@(2.0) forKey:kCIInputRadiusKey];
+        float factor = 0.5;
+        CGSize originalSize = CGSizeMake( _viewPlayer.frame.size.width ,  _viewPlayer.frame.size.height);
+        NSLog(@"asdasdasd %f %f",request.sourceImage.extent.size.width,request.sourceImage.extent.size.height);
+
+//        //CIImage *output = [filter.outputImage imageByCroppingToRect:request.sourceImage.extent];
+//        float scaleXY = (originalSize.width/request.sourceImage.extent.size.width);
+        double canvasX = ((request.sourceImage.extent.size.width)/(SCREEN_WIDTH))*(originalSize.width);
+         double canvasY = ((request.sourceImage.extent.size.height)/(SCREEN_WIDTH))*(originalSize.width);
+//        NSLog(@"aaaa %f %f",canvasX,canvasY);
+        CGAffineTransform scale ;
+                CGAffineTransform translate;
+                if(videoSize.width>videoSize.height){
+                    scale = CGAffineTransformMakeScale(1, output.extent.size.height/output.extent.size.width);
+                    double height = videoSize.height-(videoSize.height*(output.extent.size.height/output.extent.size.width));
+
+                    translate = CGAffineTransformMakeTranslation(0, (height)/2);
+                }else {
+                    scale = CGAffineTransformMakeScale(request.sourceImage.extent.size.width/request.sourceImage.extent.size.height, 1);
+                    double width = videoSize.width-(videoSize.width*(request.sourceImage.extent.size.width/request.sourceImage.extent.size.height));
+                    translate = CGAffineTransformMakeTranslation((width)/2, 0);
+
+                }
+        CGAffineTransform ok = CGAffineTransformConcat(scale, translate);
+        CIImage *p = [output imageByApplyingTransform:ok] ;
+        [filter2 setValue:output forKey:kCIInputImageKey];
+        [filter setValue:p forKey:kCIInputImageKey];
+        
+        
+        
+        // Vary filter parameters based on video timing
+       // Float64 seconds = CMTimeGetSeconds(request.compositionTime);
+        [filter setValue:@(0.0) forKey:kCIInputRadiusKey];
+        [filter2 setValue:@(20.0) forKey:kCIInputRadiusKey];
+        
+        
+        [filter3 setValue:filter2.outputImage forKey:kCIInputBackgroundImageKey];
+        [filter3 setValue:filter.outputImage forKey:kCIInputImageKey];
+        [request finishWithImage:filter3.outputImage context:nil];
+    }];
+}
+
+
+//- (AVMutableVideoComposition*)CustomVideoComposition:(AVMutableComposition*)composition{
+//    CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
+//    CIFilter *filter1 =[CIFilter filterWithName:@"CIGaussianBlur"];
+//    return [AVMutableVideoComposition videoCompositionWithAsset: composition applyingCIFiltersWithHandler:^(AVAsynchronousCIImageFilteringRequest *request){
+//
+//
+//        //Background Image
+//        CIImage *source = request.sourceImage;
+//
+//        //smaller Image
+//        CIImage *backSource = request.sourceImage;
+//        float scaleXY = (source.extent.size.height/source.extent.size.width);
+//        //AVAssetTrack *sourceVideoTrack = [[resultAsset1 tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+//        CGSize temp = CGSizeApplyAffineTransform(videoTrack.naturalSize, videoTrack.preferredTransform);
+//        CGSize size = CGSizeMake(fabs(temp.width), fabs(temp.height));
+//        float height1=temp.height-(temp.height*scaleXY);
+//        CIImage *backsource = [backSource imageByApplyingTransform:CGAffineTransformMakeScale(1,scaleXY)];
+//        backsource = [ backsource imageByApplyingTransform:CGAffineTransformMakeTranslation(0, height1/2)];
+//
+//
+//        //Background Image
+//        //        [source ]
+//
+//        //
+//        //        [blend setValue:backsource forKey:@"inputImage"];
+//        //        [blend setValue:source forKey:@"outputImage"];
+//
+//
+//        //        ble
+//
+//        //         CIFilter *blend = [ CIFilter filterWithName:@"CIBlendWithMask" keysAndValues:kCIInputImageKey,backsource,source, nil];
+//        //
+//        //        CIImage *outputImage = [ blend outputImage];
+//
+//        [filter1 setValue:source forKey:kCIInputImageKey];
+//        [filter setValue:backsource forKey:kCIInputImageKey];
+//
+//
+//        // Vary filter parameters based on video timing
+//        Float64 seconds = CMTimeGetSeconds(request.compositionTime);
+//        [filter setValue:@(0.0) forKey:kCIInputRadiusKey];
+//        [filter1 setValue:@(10.0) forKey:kCIInputRadiusKey];
+//        // Crop the blurred output to the bounds of the original image
+//        //        CIImage *output = [filter.outputImage imageByCroppingToRect:backsource.extent];
+//
+//        // Provide the filter output to the composition
+//        [request finishWithImage:filter.outputImage context:nil];
+//    }];
+//}
+//
+
+
+
+
+
 NSURL * dataFilePath(NSString *path){
     //creating a path for file and checking if it already exist if exist then delete it
     NSString *outputPath = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), path];
@@ -436,78 +481,6 @@ NSURL * dataFilePath(NSString *path){
     
 }
 
--(void)applyBlurOnAsset:(AVAsset *)asset Completion:(void(^)(BOOL success, NSError* error, NSURL* videoUrl))completion{
-    CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
-    AVVideoComposition *composition = [AVVideoComposition videoCompositionWithAsset: asset
-                                                       applyingCIFiltersWithHandler:^(AVAsynchronousCIImageFilteringRequest *request){
-                                                           // Clamp to avoid blurring transparent pixels at the image edges
-                                                           CIImage *source = [request.sourceImage imageByClampingToExtent];
-                                                           [filter setValue:source forKey:kCIInputImageKey];
-                                                           
-                                                           [filter setValue:[NSNumber numberWithDouble:10.0] forKey:kCIInputRadiusKey];
-                                                           
-                                                           // Crop the blurred output to the bounds of the original image
-                                                           CIImage *output = [filter.outputImage imageByCroppingToRect:request.sourceImage.extent];
-                                                           
-                                                           // Provide the filter output to the composition
-                                                           [request finishWithImage:output context:nil];
-                                                       }];
-    
-    
-    NSURL *outputUrl =  dataFilePath(@"tmpPost2.mp4");
-    
-    //Remove any prevouis videos at that path
-//    [[NSFileManager defaultManager]  removeItemAtURL:outputUrl error:nil];
-    
-    AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetHighestQuality] ;
-    
-    // assign all instruction for the video processing (in this case the transformation for cropping the video
-    exporter.videoComposition = composition;
-    exporter.shouldOptimizeForNetworkUse = YES;
- //   exporter.timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration);
-    exporter.outputFileType = AVFileTypeQuickTimeMovie;
-   
-    
-    if (outputUrl){
-        
-        exporter.outputURL = outputUrl;
-        [exporter exportAsynchronouslyWithCompletionHandler:^{
-            
-            switch ([exporter status]) {
-                case AVAssetExportSessionStatusFailed:
-                    NSLog(@"crop Export failed: %@", [[exporter error] localizedDescription]);
-                    if (completion){
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            completion(NO,[exporter error],nil);
-                        });
-                        return;
-                    }
-                    break;
-                case AVAssetExportSessionStatusCancelled:
-                    NSLog(@"crop Export canceled");
-                    if (completion){
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            completion(NO,nil,nil);
-                        });
-                        return;
-                    }
-                    break;
-                default:
-                    break;
-            }
-            
-            if (completion){
-                NSLog(@"success");
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSLog(@"success");
-                    self->blurUrl = outputUrl;
-                    completion(YES,nil,outputUrl);
-                });
-            }
-            
-        }];
-    }
-}
 
 - (void)splitVideo{
     

@@ -150,7 +150,7 @@
     int totalFrames = CMTimeGetSeconds(movieAsset.duration) * videoCompositionTrack.nominalFrameRate ;
     NSLog(@"tota %f %d",totalTime,totalFrames);
     Float64 timePerFrame = totalTime/totalFrames;
-    __block Float64 timePerFrameInThatBound =totalTime/totalFrame;
+    __block Float64 timePerFrameInThatBound =(totalTime/totalFrame)-(totalTime/totalFrame)/2;
     NSLog(@"bounr time %f",timePerFrameInThatBound);
     __block Float64 timeStart = 0 ;
     
@@ -159,10 +159,10 @@
         
         
         //Step through the frames
-        for (int counter = 0; counter < (ceil(totalFrame)); counter++){
-            if( counter == (ceil(totalFrame)) - 1){
-                timeStart = totalTime ;
-            }
+        for (int counter = 0; counter < (ceil(totalFrame))+4; counter++){
+//            if( counter == (ceil(totalFrame)) - 1){
+//                timeStart = totalTime ;
+//            }
              NSLog(@"bhbh %f %f",timeStart,totalTime);
             UIImage *img = [self getImageFromAsset:movieAsset atTime:CMTimeMakeWithSeconds(timeStart , 600)];
             
