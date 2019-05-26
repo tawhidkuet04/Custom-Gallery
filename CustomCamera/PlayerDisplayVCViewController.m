@@ -9,7 +9,7 @@
 #import "PlayerDisplayVCViewController.h"
 #import "ViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "canvasView.h"
+#import "trimCutSplitView.h"
 #import "CropView.h"
 #define SCREEN_WIDTH ([[UIScreen mainScreen] bounds].size.width)
 #define SCREEN_HEIGHT ([[UIScreen mainScreen] bounds].size.height)
@@ -34,10 +34,10 @@
     NSURL *blurUrl;
     AVAsset *blurAsset;
     AVAssetTrack *videoTrack;
-    canvasView *canvasTrimCutSplit;
+    trimCutSplitView *canvasTrimCutSplit;
     UIView *presentedView;
     CropView *mCropView;
-    canvasView *trimCutSplit;
+    trimCutSplitView *trimCutSplit;
      id observer;
 
 }
@@ -98,7 +98,7 @@
     options.deliveryMode = PHVideoRequestOptionsDeliveryModeAutomatic;
     options.networkAccessAllowed = YES;
     __block AVAsset *resultAsset;
-    trimCutSplit = [[canvasView alloc] init];
+    trimCutSplit = [[trimCutSplitView alloc] init];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self LoadView];
     });
@@ -296,7 +296,7 @@
     }
 }
 - (void) LoadView{
-    canvasTrimCutSplit = [self loadFromNib:@"canvasView" classToLoad:[canvasView class]];
+    canvasTrimCutSplit = [self loadFromNib:@"trimCutSplitView" classToLoad:[trimCutSplitView class]];
     canvasTrimCutSplit.frame = CGRectMake(0, SCREEN_HEIGHT, _containerView.frame.size.width, _containerView.frame.size.height);
     [[self.view viewWithTag:3223] addSubview:canvasTrimCutSplit];
     [canvasTrimCutSplit updateConstraintsIfNeeded];

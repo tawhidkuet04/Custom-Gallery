@@ -6,7 +6,7 @@
 //  Copyright © 2019 Tawhid Joarder. All rights reserved.
 //
 
-#import "canvasView.h"
+#import "trimCutSplitView.h"
 #import "ViewController.h"
 #import "PlayerDisplayVCViewController.h"
 
@@ -14,7 +14,7 @@
 #define SCREEN_HEIGHT ([[UIScreen mainScreen] bounds].size.height)
 #define SCREEN_MAX_LENGTH (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
 #define SCREEN_MIN_LENGTH (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
-@interface canvasView ()<canvasViewDelegate,UITabBarDelegate>{
+@interface trimCutSplitView ()<UITabBarDelegate>{
 id observer;
 AVAsset *asset;
     UIButton *playPause;
@@ -28,7 +28,7 @@ IBOutlet UIImageView *startBound;
 ///////
 @end
 
-@implementation canvasView
+@implementation trimCutSplitView
 
 
 
