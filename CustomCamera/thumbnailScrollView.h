@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 NS_ASSUME_NONNULL_BEGIN
-@protocol playerDisplayVCViewControllerDelegate <NSObject>
+@protocol canvasViewDelegate <NSObject>
 -(void)updateTotalTime:(double)totalTime;
 
 @end
@@ -23,8 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
     float totalTime ;
     
 }
-@property(weak,nonatomic) id <playerDisplayVCViewControllerDelegate> delegator ;
-- (id)initWithFrame:(CGRect)frame withDelegate:(id<playerDisplayVCViewControllerDelegate>) delegate andAsset:(AVAsset *)asset  frameView:(UIView *) frameGenerateView;
+@property(weak,nonatomic) id <canvasViewDelegate> delegator ;
+- (id)initWithFrame:(CGRect)frame withDelegate:(id<canvasViewDelegate>) delegate andAsset:(AVAsset *)asset  frameView:(UIView *) frameGenerateView;
 -(void) generateFramefromvideo: (AVAsset *) movieAsset;
 @end
 

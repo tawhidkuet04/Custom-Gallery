@@ -26,10 +26,24 @@
 }
 
 - (void)setPlayer:(AVPlayer *)player {
+     NSLog(@"pppppppp");
     ((AVPlayerLayer *)[self layer]).videoGravity = AVLayerVideoGravityResize;
  //   [((AVPlayerLayer *)[self layer]) setAffineTransform:CGAffineTransformMakeRotation(degreeToRadian(90))];
     [(AVPlayerLayer *)[self layer] setPlayer:player];
 }
+- (void)setFrame:(CGRect)frame{
+    NSLog(@"aa okok okok");
+    [super setFrame:frame];
+}
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        
+    }
+    return self;
+}
+
 //- (void)setOk:(CGRect )framee {
 //    //((AVPlayerLayer *)[self layer]).videoGravity = AVLayerVideoGravityResizeAspect;
 //    [((AVPlayerLayer *)[self layer]) setFrame:framee];  //  [(AVPlayerLayer *)[self layer] setPlayer:player];

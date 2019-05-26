@@ -8,13 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		4E031BCC2271B48200C41162 /* PlayerDisplayVCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E031BC62271B48100C41162 /* PlayerDisplayVCViewController.m */; };
-		4E031BCD2271B48200C41162 /* PlayerBC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E031BC92271B48200C41162 /* PlayerBC.m */; };
 		4E031BCE2271B48200C41162 /* thumbnailScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E031BCA2271B48200C41162 /* thumbnailScrollView.m */; };
 		4E03B5802291129E001D6744 /* IMG_0413.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 4E03B57F2291129E001D6744 /* IMG_0413.MOV */; };
 		4E0762A82280396F008E87D8 /* sf-ui-display-medium-58646be638f96.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4E0762A722803949008E87D8 /* sf-ui-display-medium-58646be638f96.otf */; };
+		4E07B1D2229403E600E37F63 /* PlayerBC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E07B1D1229403E600E37F63 /* PlayerBC.m */; };
 		4E1C0998227AE169009F637D /* customSegmentUX.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1C0997227AE169009F637D /* customSegmentUX.m */; };
 		4E3041D522782AA90080A6B2 /* StartArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3041D322782AA90080A6B2 /* StartArrow.png */; };
 		4E3041D622782AA90080A6B2 /* EndArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3041D422782AA90080A6B2 /* EndArrow.png */; };
+		4E33491D2296A3F7006C6D76 /* canvasView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E33491A2296A3F6006C6D76 /* canvasView.m */; };
+		4E33491E2296A3F7006C6D76 /* canvasView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E33491C2296A3F7006C6D76 /* canvasView.xib */; };
 		4E43F253228D1DBD0050EDB1 /* BoyHorseRide.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 4E43F252228D1DBD0050EDB1 /* BoyHorseRide.mp4 */; };
 		4E7C16BE226F42F400605E18 /* imageShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E7C16BC226F42F400605E18 /* imageShowViewController.m */; };
 		4E7C16BF226F42F400605E18 /* imageShowViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E7C16BD226F42F400605E18 /* imageShowViewController.xib */; };
@@ -30,6 +32,8 @@
 		4E7EE2AA226EFE3000EF8C99 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E7EE2A9226EFE3000EF8C99 /* Photos.framework */; };
 		4E7EE2AC226EFE3D00EF8C99 /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E7EE2AB226EFE3D00EF8C99 /* PhotosUI.framework */; };
 		4E7EE2AF226F0A0000EF8C99 /* PhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E7EE2AE226F0A0000EF8C99 /* PhotoCell.m */; };
+		4E91E7F3229A53650093420D /* CropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E91E7F0229A53640093420D /* CropView.m */; };
+		4E91E7F4229A53650093420D /* CropView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E91E7F2229A53640093420D /* CropView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,15 +57,18 @@
 		4E031BC62271B48100C41162 /* PlayerDisplayVCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerDisplayVCViewController.m; sourceTree = "<group>"; wrapsLines = 0; };
 		4E031BC72271B48100C41162 /* PlayerDisplayVCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerDisplayVCViewController.h; sourceTree = "<group>"; };
 		4E031BC82271B48100C41162 /* thumbnailScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thumbnailScrollView.h; sourceTree = "<group>"; };
-		4E031BC92271B48200C41162 /* PlayerBC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerBC.m; sourceTree = "<group>"; };
 		4E031BCA2271B48200C41162 /* thumbnailScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = thumbnailScrollView.m; sourceTree = "<group>"; };
 		4E031BCB2271B48200C41162 /* PlayerBC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerBC.h; sourceTree = "<group>"; };
 		4E03B57F2291129E001D6744 /* IMG_0413.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = IMG_0413.MOV; sourceTree = "<group>"; };
 		4E0762A722803949008E87D8 /* sf-ui-display-medium-58646be638f96.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "sf-ui-display-medium-58646be638f96.otf"; sourceTree = "<group>"; };
+		4E07B1D1229403E600E37F63 /* PlayerBC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerBC.m; sourceTree = "<group>"; };
 		4E1C0996227AE169009F637D /* customSegmentUX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = customSegmentUX.h; sourceTree = "<group>"; };
 		4E1C0997227AE169009F637D /* customSegmentUX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = customSegmentUX.m; sourceTree = "<group>"; };
 		4E3041D322782AA90080A6B2 /* StartArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StartArrow.png; sourceTree = "<group>"; };
 		4E3041D422782AA90080A6B2 /* EndArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EndArrow.png; sourceTree = "<group>"; };
+		4E33491A2296A3F6006C6D76 /* canvasView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = canvasView.m; sourceTree = "<group>"; };
+		4E33491B2296A3F6006C6D76 /* canvasView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = canvasView.h; sourceTree = "<group>"; };
+		4E33491C2296A3F7006C6D76 /* canvasView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = canvasView.xib; sourceTree = "<group>"; };
 		4E43F252228D1DBD0050EDB1 /* BoyHorseRide.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = BoyHorseRide.mp4; sourceTree = "<group>"; };
 		4E7C16BB226F42F400605E18 /* imageShowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = imageShowViewController.h; sourceTree = "<group>"; };
 		4E7C16BC226F42F400605E18 /* imageShowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = imageShowViewController.m; sourceTree = "<group>"; };
@@ -87,6 +94,9 @@
 		4E7EE2AB226EFE3D00EF8C99 /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
 		4E7EE2AD226F0A0000EF8C99 /* PhotoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoCell.h; sourceTree = "<group>"; };
 		4E7EE2AE226F0A0000EF8C99 /* PhotoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoCell.m; sourceTree = "<group>"; };
+		4E91E7F0229A53640093420D /* CropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CropView.m; sourceTree = "<group>"; };
+		4E91E7F1229A53640093420D /* CropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CropView.h; sourceTree = "<group>"; };
+		4E91E7F2229A53640093420D /* CropView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CropView.xib; sourceTree = "<group>"; };
 		4E97124222703F0B00816F91 /* Config.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -147,6 +157,9 @@
 				4E7EE277226EF24F00EF8C99 /* ViewController.h */,
 				4E7EE278226EF24F00EF8C99 /* ViewController.m */,
 				4E7EE2AD226F0A0000EF8C99 /* PhotoCell.h */,
+				4E33491B2296A3F6006C6D76 /* canvasView.h */,
+				4E33491A2296A3F6006C6D76 /* canvasView.m */,
+				4E33491C2296A3F7006C6D76 /* canvasView.xib */,
 				4E7EE2AE226F0A0000EF8C99 /* PhotoCell.m */,
 				4E43F252228D1DBD0050EDB1 /* BoyHorseRide.mp4 */,
 				4E7EE27A226EF24F00EF8C99 /* Main.storyboard */,
@@ -161,11 +174,14 @@
 				4E97124222703F0B00816F91 /* Config.pch */,
 				4E7EE283226EF25000EF8C99 /* main.m */,
 				4E7C16BB226F42F400605E18 /* imageShowViewController.h */,
+				4E91E7F1229A53640093420D /* CropView.h */,
+				4E91E7F0229A53640093420D /* CropView.m */,
+				4E91E7F2229A53640093420D /* CropView.xib */,
 				4E7C16BC226F42F400605E18 /* imageShowViewController.m */,
 				4E7C16BD226F42F400605E18 /* imageShowViewController.xib */,
+				4E07B1D1229403E600E37F63 /* PlayerBC.m */,
 				4E031BCB2271B48200C41162 /* PlayerBC.h */,
 				4E0762A722803949008E87D8 /* sf-ui-display-medium-58646be638f96.otf */,
-				4E031BC92271B48200C41162 /* PlayerBC.m */,
 				4E031BC72271B48100C41162 /* PlayerDisplayVCViewController.h */,
 				4E031BC62271B48100C41162 /* PlayerDisplayVCViewController.m */,
 				4E031BC82271B48100C41162 /* thumbnailScrollView.h */,
@@ -309,9 +325,11 @@
 				4E3041D522782AA90080A6B2 /* StartArrow.png in Resources */,
 				4E7EE281226EF25000EF8C99 /* LaunchScreen.storyboard in Resources */,
 				4E7EE27E226EF25000EF8C99 /* Assets.xcassets in Resources */,
+				4E33491E2296A3F7006C6D76 /* canvasView.xib in Resources */,
 				4E3041D622782AA90080A6B2 /* EndArrow.png in Resources */,
 				4E7EE27C226EF24F00EF8C99 /* Main.storyboard in Resources */,
 				4E43F253228D1DBD0050EDB1 /* BoyHorseRide.mp4 in Resources */,
+				4E91E7F4229A53650093420D /* CropView.xib in Resources */,
 				4E7C16BF226F42F400605E18 /* imageShowViewController.xib in Resources */,
 				4E03B5802291129E001D6744 /* IMG_0413.MOV in Resources */,
 			);
@@ -338,10 +356,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4E031BCD2271B48200C41162 /* PlayerBC.m in Sources */,
+				4E33491D2296A3F7006C6D76 /* canvasView.m in Sources */,
 				4E7EE2AF226F0A0000EF8C99 /* PhotoCell.m in Sources */,
 				4E7EE279226EF24F00EF8C99 /* ViewController.m in Sources */,
 				4E7EE284226EF25000EF8C99 /* main.m in Sources */,
+				4E91E7F3229A53650093420D /* CropView.m in Sources */,
+				4E07B1D2229403E600E37F63 /* PlayerBC.m in Sources */,
 				4E7C16BE226F42F400605E18 /* imageShowViewController.m in Sources */,
 				4E7EE276226EF24F00EF8C99 /* AppDelegate.m in Sources */,
 				4E031BCE2271B48200C41162 /* thumbnailScrollView.m in Sources */,

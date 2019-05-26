@@ -14,7 +14,7 @@
 #define SCREEN_MIN_LENGTH (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
 
 @implementation thumbnailScrollView
-- (id)initWithFrame:(CGRect)frame withDelegate:(id<playerDisplayVCViewControllerDelegate>) delegate andAsset:(AVAsset *)asset  frameView:(UIView *) frameGenerateView{
+- (id)initWithFrame:(CGRect)frame withDelegate:(id<canvasViewDelegate>) delegate andAsset:(AVAsset *)asset  frameView:(UIView *) frameGenerateView{
     self = [super initWithFrame:frame];
     self.backgroundColor = [ UIColor clearColor ];
     
