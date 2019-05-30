@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic) IBOutlet PlayerBC *viewPlayer;
 @property (strong, nonatomic) IBOutlet UIView *containerView;
-
+-(void)call;
 - (void) PlayerSetPlayPause : (UIButton*)btn withPlayingStatus:(float)rate;
 @end
 

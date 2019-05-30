@@ -235,41 +235,57 @@
                             <view tag="3223" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nCX-Yt-wNA">
                                 <rect key="frame" x="0.0" y="64" width="414" height="623"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UAT-Fo-uwf" userLabel="player" customClass="PlayerBC">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xn1-re-iYi">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="436"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mLB-tF-fHd">
-                                                <rect key="frame" x="181" y="192" width="52" height="52"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UAT-Fo-uwf" userLabel="player" customClass="PlayerBC">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="436"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mLB-tF-fHd">
+                                                        <rect key="frame" x="181" y="192" width="52" height="52"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" secondItem="mLB-tF-fHd" secondAttribute="height" multiplier="1:1" id="jCb-ag-GZN"/>
+                                                        </constraints>
+                                                        <state key="normal" image="play" backgroundImage="button:mLB-tF-fHd:backgroundImage"/>
+                                                        <connections>
+                                                            <action selector="playPauseAction:" destination="INf-KJ-U3L" eventType="touchUpInside" id="o0J-rZ-sn3"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" secondItem="mLB-tF-fHd" secondAttribute="height" multiplier="1:1" id="6oA-u2-2wE"/>
+                                                    <constraint firstAttribute="width" constant="414" id="5YR-Fg-ciC"/>
+                                                    <constraint firstAttribute="height" constant="436" id="6Ej-ad-VhQ"/>
+                                                    <constraint firstItem="mLB-tF-fHd" firstAttribute="centerY" secondItem="UAT-Fo-uwf" secondAttribute="centerY" id="Ba0-5a-d0O"/>
+                                                    <constraint firstItem="mLB-tF-fHd" firstAttribute="centerX" secondItem="UAT-Fo-uwf" secondAttribute="centerX" id="eaz-T2-Qpb"/>
                                                 </constraints>
-                                                <state key="normal" image="play" backgroundImage="button:mLB-tF-fHd:backgroundImage"/>
-                                                <connections>
-                                                    <action selector="playPauseAction:" destination="INf-KJ-U3L" eventType="touchUpInside" id="o0J-rZ-sn3"/>
-                                                </connections>
-                                            </button>
+                                            </view>
                                         </subviews>
-                                        <color key="backgroundColor" red="1" green="0.49019607840000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" red="0.14117647058823529" green="0.14117647058823529" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
-                                            <constraint firstItem="mLB-tF-fHd" firstAttribute="centerY" secondItem="UAT-Fo-uwf" secondAttribute="centerY" id="3au-dv-llg"/>
-                                            <constraint firstItem="mLB-tF-fHd" firstAttribute="centerX" secondItem="UAT-Fo-uwf" secondAttribute="centerX" id="dZC-z5-Vml"/>
-                                            <constraint firstAttribute="width" secondItem="UAT-Fo-uwf" secondAttribute="height" multiplier="207:218" id="fsG-JO-HxP"/>
+                                            <constraint firstItem="UAT-Fo-uwf" firstAttribute="centerY" secondItem="Xn1-re-iYi" secondAttribute="centerY" id="2rV-Gq-vEr"/>
+                                            <constraint firstItem="UAT-Fo-uwf" firstAttribute="centerX" secondItem="Xn1-re-iYi" secondAttribute="centerX" id="x4h-LH-SlS"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ee6-j8-t9f">
                                         <rect key="frame" x="0.0" y="436" width="414" height="187"/>
                                         <color key="backgroundColor" red="0.14117647058823529" green="0.14117647058823529" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="ee6-j8-t9f" secondAttribute="height" multiplier="414:187" id="tyq-JY-JWV"/>
+                                        </constraints>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="UAT-Fo-uwf" firstAttribute="centerX" secondItem="nCX-Yt-wNA" secondAttribute="centerX" id="2EU-r5-zW0"/>
-                                    <constraint firstItem="ee6-j8-t9f" firstAttribute="top" secondItem="UAT-Fo-uwf" secondAttribute="bottom" id="P5a-tc-aV1"/>
-                                    <constraint firstItem="UAT-Fo-uwf" firstAttribute="top" secondItem="nCX-Yt-wNA" secondAttribute="top" id="SDw-UG-F1k"/>
-                                    <constraint firstItem="ee6-j8-t9f" firstAttribute="leading" secondItem="nCX-Yt-wNA" secondAttribute="leading" id="UXu-58-qS6"/>
-                                    <constraint firstAttribute="trailing" secondItem="ee6-j8-t9f" secondAttribute="trailing" id="lHO-XR-vsA"/>
-                                    <constraint firstAttribute="bottom" secondItem="ee6-j8-t9f" secondAttribute="bottom" id="zrD-mj-EQv"/>
+                                    <constraint firstItem="Xn1-re-iYi" firstAttribute="top" secondItem="nCX-Yt-wNA" secondAttribute="top" id="2g3-A8-tmu"/>
+                                    <constraint firstAttribute="trailing" secondItem="ee6-j8-t9f" secondAttribute="trailing" id="BpX-f4-CLp"/>
+                                    <constraint firstAttribute="trailing" secondItem="Xn1-re-iYi" secondAttribute="trailing" id="QvZ-Fm-mef"/>
+                                    <constraint firstItem="Xn1-re-iYi" firstAttribute="leading" secondItem="nCX-Yt-wNA" secondAttribute="leading" id="ZIT-6H-zDk"/>
+                                    <constraint firstItem="ee6-j8-t9f" firstAttribute="leading" secondItem="nCX-Yt-wNA" secondAttribute="leading" id="aSP-0a-qAR"/>
+                                    <constraint firstItem="ee6-j8-t9f" firstAttribute="top" secondItem="Xn1-re-iYi" secondAttribute="bottom" id="lh0-jf-h96"/>
+                                    <constraint firstItem="ee6-j8-t9f" firstAttribute="top" secondItem="Xn1-re-iYi" secondAttribute="bottom" id="uIj-a9-24k"/>
+                                    <constraint firstAttribute="bottom" secondItem="ee6-j8-t9f" secondAttribute="bottom" id="xQx-RW-gsb"/>
                                 </constraints>
                             </view>
                             <tabBar contentMode="scaleAspectFit" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c1k-OY-eZX">
@@ -300,7 +316,6 @@
                             <constraint firstAttribute="bottom" secondItem="SCR-6Q-NwH" secondAttribute="bottom" constant="236" id="H9I-Fm-7bM"/>
                             <constraint firstItem="nCX-Yt-wNA" firstAttribute="trailing" secondItem="7au-xt-7W1" secondAttribute="trailing" id="P7L-yf-nMR"/>
                             <constraint firstItem="c1k-OY-eZX" firstAttribute="top" secondItem="nCX-Yt-wNA" secondAttribute="bottom" id="Q00-BB-E28"/>
-                            <constraint firstItem="UAT-Fo-uwf" firstAttribute="width" secondItem="Rtt-kl-gPU" secondAttribute="width" id="QrZ-jz-6Qb"/>
                             <constraint firstItem="SCR-6Q-NwH" firstAttribute="trailing" secondItem="7au-xt-7W1" secondAttribute="trailing" id="Y19-UE-hru"/>
                             <constraint firstItem="c1k-OY-eZX" firstAttribute="trailing" secondItem="7au-xt-7W1" secondAttribute="trailing" id="cuM-v8-nhN"/>
                             <constraint firstItem="SCR-6Q-NwH" firstAttribute="top" secondItem="7au-xt-7W1" secondAttribute="top" id="hJN-MC-IHs"/>
@@ -323,7 +338,9 @@
                     <connections>
                         <outlet property="containerView" destination="ee6-j8-t9f" id="JDi-wM-ixv"/>
                         <outlet property="playPause" destination="mLB-tF-fHd" id="qWw-00-1Cp"/>
+                        <outlet property="playerHeight" destination="6Ej-ad-VhQ" id="zPL-U6-1Ba"/>
                         <outlet property="playerView" destination="UAT-Fo-uwf" id="UYe-jE-ysP"/>
+                        <outlet property="playerWidth" destination="5YR-Fg-ciC" id="FUo-XX-Phv"/>
                         <outlet property="viewPlayer" destination="UAT-Fo-uwf" id="YQe-SJ-M3d"/>
                     </connections>
                 </viewController>

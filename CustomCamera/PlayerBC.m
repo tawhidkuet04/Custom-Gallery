@@ -27,9 +27,11 @@
 
 - (void)setPlayer:(AVPlayer *)player {
      NSLog(@"pppppppp");
-    ((AVPlayerLayer *)[self layer]).videoGravity = AVLayerVideoGravityResize;
+     [(AVPlayerLayer *)[self layer] setPlayer:player];
+  
+    ((AVPlayerLayer *)[self layer]).videoGravity = AVLayerVideoGravityResizeAspectFill;
  //   [((AVPlayerLayer *)[self layer]) setAffineTransform:CGAffineTransformMakeRotation(degreeToRadian(90))];
-    [(AVPlayerLayer *)[self layer] setPlayer:player];
+   
 }
 - (void)setFrame:(CGRect)frame{
     NSLog(@"aa okok okok");
