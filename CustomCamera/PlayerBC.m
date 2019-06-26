@@ -45,7 +45,10 @@
     }
     return self;
 }
-
+//- (void)layoutSubviews{
+//    [super layoutSubviews];
+//    ((AVPlayerLayer *)[self layer]).frame = self.bounds;
+//}
 //- (void)setOk:(CGRect )framee {
 //    //((AVPlayerLayer *)[self layer]).videoGravity = AVLayerVideoGravityResizeAspect;
 //    [((AVPlayerLayer *)[self layer]) setFrame:framee];  //  [(AVPlayerLayer *)[self layer] setPlayer:player];

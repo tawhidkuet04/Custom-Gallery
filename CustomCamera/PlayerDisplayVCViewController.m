@@ -68,11 +68,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    playerHeight.constant = 375 ;
-    playerWidth.constant = 375 ;
+    playerHeight.constant = 436 ;
+    playerWidth.constant = 414 ;
 ////
     permanentCanvasWidth = playerWidth.constant;
-    permanentCanvasHeight = playerHeight.constant;
+    permanentCanvasHeight = playerHeight.constant ;
     
    // presentedView = _containerView;
     //[_playerView setFrame:CGRectMake(0, 0, 375, 200)];
@@ -170,6 +170,10 @@
     CIFilter *filter2 = [CIFilter filterWithName:@"CIGaussianBlur"];
     CIFilter *filter3 = [CIFilter filterWithName:@"CISourceOverCompositing"];
     return [AVMutableVideoComposition videoCompositionWithAsset: composition applyingCIFiltersWithHandler:^(AVAsynchronousCIImageFilteringRequest *request){
+        
+        CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
+        CIFilter *filter2 = [CIFilter filterWithName:@"CIGaussianBlur"];
+        CIFilter *filter3 = [CIFilter filterWithName:@"CISourceOverCompositing"];
         CIImage *output = [request.sourceImage imageByClampingToExtent];
         output = [output imageByCroppingToRect:request.sourceImage.extent];
         CGSize videoSize = CGSizeApplyAffineTransform(videoTrack.naturalSize,videoTrack.preferredTransform);
@@ -331,12 +335,16 @@
 //        playerHeight.constant = 210 ;
 //        playerWidth.constant = 375 ;
 //
+//        playerHeight.constant = 232.875 ;
+//        playerWidth.constant = 414 ;
+//
         
-        [UIView animateWithDuration:3
+        [UIView animateWithDuration:1
                                       animations:^{
-                                          
-                                          playerHeight.constant = 210 ;
-                                          playerWidth.constant = 375 ;
+                                         
+                                          playerHeight.constant = 232.875 ;
+                                          playerWidth.constant = 414 ;
+
                                           [self.playerView layoutIfNeeded];
                                       }
                                       completion:^(BOOL finished){
@@ -352,14 +360,18 @@
         
     }else if(item.tag == 1 ){
         NSLog(@"pressed dddddddd");
-        [UIView animateWithDuration:1
+        
+        [UIView animateWithDuration:0.02
                          animations:^{
                              // _viewPlayer.frame = CGRectMake(100 , 100, 200, 200);
-                             playerHeight.constant = 395 ;
-                             playerWidth.constant = 246;
+                            
+                             playerHeight.constant = 436     ;
+                             playerWidth.constant = 348.8;
+                           
                              [self.playerView layoutIfNeeded];
                          }
                          completion:^(BOOL finished){
+                             
 //                             CGSize originalSize = CGSizeMake( _viewPlayer.frame.size.width ,  _viewPlayer.frame.size.height);
 //
 //
@@ -382,8 +394,8 @@
 //                             for( int i = 375; i <= (375-250) ; i ++ ){
 //                                 playerHeight.constant = i ;
 //                             }
-                             playerHeight.constant = 250 ;
-                             playerWidth.constant = 375;
+                             playerHeight.constant = 436;
+                             playerWidth.constant = 218;
                              [self.playerView layoutIfNeeded];
                          }
                          completion:^(BOOL finished){
